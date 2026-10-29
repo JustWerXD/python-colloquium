@@ -1,0 +1,2638 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Колоквиум по Python</title>
+  <style>
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --text: #1c2330;
+  --muted: #5d6778;
+  --border: #dde1e8;
+  --accent: #2f5fd0;
+  --accent-text: #ffffff;
+  --ok: #1f8a4c;
+  --ok-bg: #e4f5ea;
+  --bad: #c0392b;
+  --bad-bg: #fbe9e6;
+  --why-bg: #eef3fd;
+  --warn-bg: #fbf1dc;
+  --simple: #1f8a4c;
+  --medium: #b7791f;
+  --hard: #c0392b;
+  --claude: #6b46c1;
+  --claude-bg: #efe9fb;
+  --file: #2f5fd0;
+  --file-bg: #e6edfb;
+  --code-bg: #f1f3f7;
+  --code-text: #1c2330;
+  --tok-kw: #a626a4;
+  --tok-str: #2e7d32;
+  --tok-com: #7b8494;
+  --tok-num: #b45309;
+  --tok-dec: #0b7285;
+  --tok-const: #c2410c;
+  --tok-builtin: #1d4ed8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #12151b;
+    --surface: #1b2029;
+    --text: #e6e9ef;
+    --muted: #9aa4b5;
+    --border: #2d3441;
+    --accent: #6f95ff;
+    --accent-text: #0c1020;
+    --ok: #55c785;
+    --ok-bg: #16301f;
+    --bad: #f08577;
+    --bad-bg: #3a1c18;
+    --why-bg: #1b2538;
+    --warn-bg: #3a2f17;
+    --simple: #55c785;
+    --medium: #e3b25a;
+    --hard: #f08577;
+    --claude: #b49cf2;
+    --claude-bg: #2a2142;
+    --file: #8fb0ff;
+    --file-bg: #1b2745;
+    --code-bg: #12161d;
+    --code-text: #e6e9ef;
+    --tok-kw: #d98cf0;
+    --tok-str: #8fd18f;
+    --tok-com: #7b8494;
+    --tok-num: #f0b36a;
+    --tok-dec: #6fd0e6;
+    --tok-const: #f59e6b;
+    --tok-builtin: #8fb0ff;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.wrap { max-width: 780px; margin: 0 auto; padding: 0 16px; }
+
+.top { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 5; }
+.top-inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding-top: 10px; padding-bottom: 10px; }
+.top h1 { font-size: 1.1rem; margin: 0; }
+.tabs { display: flex; gap: 6px; }
+.tab { border: 1px solid var(--border); background: transparent; color: var(--text); padding: 6px 14px; border-radius: 999px; font: inherit; font-size: .92rem; cursor: pointer; }
+.tab[aria-current="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+
+main { padding-top: 20px; padding-bottom: 60px; }
+
+h2 { font-size: 1.35rem; margin: 0 0 6px; }
+h3 { font-size: 1.05rem; margin: 22px 0 8px; }
+.muted { color: var(--muted); }
+.small { font-size: .88rem; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 16px; }
+
+/* кнопки */
+.btn { font: inherit; font-weight: 600; border: 1px solid var(--border); background: var(--surface); color: var(--text); padding: 11px 18px; border-radius: 10px; cursor: pointer; }
+.btn:hover { border-color: var(--accent); }
+.btn:focus-visible, .tab:focus-visible, input:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+.btn.ok { background: var(--ok-bg); border-color: var(--ok); color: var(--ok); }
+.btn.bad { background: var(--bad-bg); border-color: var(--bad); color: var(--bad); }
+.btn.ghost { background: transparent; }
+.btn[disabled] { opacity: .45; cursor: not-allowed; }
+.btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.btn-row .grow { flex: 1 1 160px; }
+kbd { font: .78em ui-monospace, Menlo, monospace; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; background: var(--code-bg); color: var(--muted); }
+
+/* бейджи */
+.badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.badge { font-size: .76rem; font-weight: 600; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted); }
+.badge.simple { color: var(--simple); border-color: var(--simple); }
+.badge.medium { color: var(--medium); border-color: var(--medium); }
+.badge.hard { color: var(--hard); border-color: var(--hard); }
+.badge.repeat { color: var(--bad); border-color: var(--bad); background: var(--bad-bg); }
+.badge.claude { color: var(--claude); background: var(--claude-bg); border-color: transparent; }
+.badge.file { color: var(--file); background: var(--file-bg); border-color: transparent; }
+
+/* форма настроек */
+.field-group { margin: 12px 0; }
+.field-group legend { font-weight: 600; margin-bottom: 4px; padding: 0; }
+fieldset { border: 0; margin: 0; padding: 0; }
+.check { display: flex; align-items: flex-start; gap: 8px; padding: 4px 0; cursor: pointer; }
+.check input { margin-top: 5px; width: 17px; height: 17px; accent-color: var(--accent); }
+.check .count { color: var(--muted); font-size: .85rem; white-space: nowrap; }
+.cols { columns: 1; }
+@media (min-width: 640px) { .cols { columns: 2; column-gap: 24px; } .cols .check { break-inside: avoid; } }
+
+/* прогресс */
+.progress-line { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; font-size: .9rem; color: var(--muted); margin-bottom: 6px; }
+.bar { height: 8px; background: var(--border); border-radius: 999px; overflow: hidden; margin-bottom: 14px; }
+.bar > span { display: block; height: 100%; background: var(--ok); width: 0; transition: width .25s; }
+.status { min-height: 1.5em; font-size: .9rem; margin: 0 0 8px; color: var(--muted); }
+.status.bad { color: var(--bad); }
+.status.ok { color: var(--ok); }
+
+/* вопрос */
+.question { font-size: 1.2rem; font-weight: 600; margin: 0 0 12px; }
+.answer-block { border-top: 1px solid var(--border); margin-top: 16px; padding-top: 14px; }
+.answer-block + .answer-block { margin-top: 14px; }
+.answer-block.why { border-top: 0; border-left: 4px solid var(--accent); background: var(--why-bg); border-radius: 0 10px 10px 0; padding: 12px 14px; }
+.badge.why { color: var(--accent); background: var(--why-bg); border-color: var(--accent); }
+.rich p { margin: 0 0 .7em; }
+.rich ul { margin: 0 0 .7em; padding-left: 1.3em; }
+.rich > :last-child { margin-bottom: 0; }
+.rich code, .question code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .9em; background: var(--code-bg); padding: 1px 5px; border-radius: 5px; }
+pre { background: var(--code-bg); color: var(--code-text); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin: 0 0 .8em; overflow-x: auto; }
+pre code { background: none; padding: 0; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .86rem; line-height: 1.5; white-space: pre; }
+.tok-kw { color: var(--tok-kw); }
+.tok-str { color: var(--tok-str); }
+.tok-com { color: var(--tok-com); font-style: italic; }
+.tok-num { color: var(--tok-num); }
+.tok-dec { color: var(--tok-dec); }
+.tok-const { color: var(--tok-const); }
+.tok-builtin { color: var(--tok-builtin); }
+
+/* итоги */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 14px 0; }
+.stat { background: var(--code-bg); border-radius: 10px; padding: 10px 14px; }
+.stat b { display: block; font-size: 1.6rem; line-height: 1.2; }
+.list-plain { list-style: none; padding: 0; margin: 0; }
+.list-plain li { padding: 6px 0; border-bottom: 1px solid var(--border); }
+
+/* просмотр всех вопросов */
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
+.toolbar input[type="search"] { flex: 1 1 220px; font: inherit; padding: 9px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--text); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: inherit; font-size: .85rem; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--border); background: transparent; color: var(--text); cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+details.q { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; }
+details.q > summary { cursor: pointer; padding: 11px 14px; font-weight: 600; list-style-position: inside; }
+details.q[open] > summary { border-bottom: 1px solid var(--border); }
+details.q .inner { padding: 12px 14px 14px; }
+.topic-title { margin: 26px 0 8px; font-size: 1.1rem; }
+.hidden { display: none !important; }
+
+/* быстрая проверка */
+.btn.half { background: var(--warn-bg); border-color: var(--medium); color: var(--medium); }
+.indent { margin-left: 26px; }
+.timer { font-variant-numeric: tabular-nums; font-size: 1.1rem; color: var(--text); }
+.timer.low { color: var(--bad); }
+.split li { display: flex; justify-content: space-between; gap: 12px; }
+.res { display: inline-block; min-width: 1.6em; text-align: center; font-weight: 700; margin-right: 6px; }
+.res.ok { color: var(--ok); }
+.res.half { color: var(--medium); }
+.res.bad { color: var(--bad); }
+
+</style>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <h1>Колоквиум по Python</h1>
+      <nav class="tabs" aria-label="Режимы">
+        <button class="tab" data-tab="learn" type="button">Заучивание</button>
+        <button class="tab" data-tab="quiz" type="button">Проверка</button>
+        <button class="tab" data-tab="browse" type="button">Все вопросы</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap" id="app">
+    <noscript>Для работы сайта нужен включённый JavaScript.</noscript>
+  </main>
+
+  <script>
+// Файл создан скриптом build/build.py — вручную не редактировать.
+window.QUESTIONS = [
+ {
+  "topic_no": 1,
+  "topic": "IO. Типы данных.",
+  "level": "simple",
+  "question": "Какие способы чтения данных вы знаете?",
+  "code": "",
+  "answer": "`input`, `read`",
+  "id": 1,
+  "claude": "Ещё способы:\n- `input()` — читает одну строку с клавиатуры (всегда возвращает `str`).\n- `sys.stdin.readline()` / `sys.stdin.read()` — чтение из стандартного ввода (быстрее `input`).\n- Для файла: `f.read()` (весь файл), `f.readline()` (одна строка), `f.readlines()` (список строк) и просто `for line in f:`.",
+  "why": "Всё, что программа получает «снаружи» (с клавиатуры, из файла), приходит как **текст**. Поэтому `input()` всегда возвращает строку, а число из неё мы делаем сами через `int()`.\n\nУ файла свои методы чтения, потому что файл — другой источник: его можно прочитать целиком (`read`), по строке (`readline`) или обойти циклом. Для большого файла лучше читать по частям, чтобы не забивать память."
+ },
+ {
+  "topic_no": 1,
+  "topic": "IO. Типы данных.",
+  "level": "simple",
+  "question": "Какие базовые типы данных в Python вы знаете?",
+  "code": "",
+  "answer": "`int`, `float`, `str`, `bool`, `NoneType`, etc.",
+  "id": 2,
+  "claude": "Ещё есть `complex`, `bytes`, и контейнеры: `list`, `tuple`, `dict`, `set`, `frozenset`. `bool` — подкласс `int` (`True == 1`). Типы делятся на неизменяемые (`int`, `float`, `str`, `tuple`, `frozenset`, `bool`, `NoneType`) и изменяемые (`list`, `dict`, `set`).",
+  "why": "В Python **тип есть у значения (объекта), а не у переменной**. Поэтому можно написать `x = 5`, а потом `x = \"привет\"`: имя просто начинает указывать на другой объект.\n\nТипов много, потому что у разных данных разные операции: числа складывают, строки склеивают, `None` означает «ничего нет». Деление на изменяемые и неизменяемые типы пригодится дальше: от него зависит, что может быть ключом словаря."
+ },
+ {
+  "topic_no": 1,
+  "topic": "IO. Типы данных.",
+  "level": "simple",
+  "question": "Как преобразовать строку в целое число?",
+  "code": "",
+  "answer": "`int(\"123\")`",
+  "id": 3,
+  "claude": "",
+  "why": "`int(\"123\")` разбирает символы строки и строит из них число. Python **сам** строки в числа не превращает: `\"1\" + 1` даст ошибку. Так сделано специально, чтобы не было неожиданностей (правило «явное лучше неявного»).\n\nЕсли в строке не целое число (`\"abc\"`, `\"3.14\"`), будет `ValueError`."
+ },
+ {
+  "topic_no": 1,
+  "topic": "IO. Типы данных.",
+  "level": "simple",
+  "question": "Какие битовые операции вы знаете?",
+  "code": "",
+  "answer": "&, |, ~, ^, <<, >>",
+  "id": 4,
+  "claude": "Примеры (числа в двоичной записи: 5 = `101`, 3 = `011`):\n\n```python\nprint(5 & 3)   # 1  — И (единица только там, где обе единицы)\nprint(5 | 3)   # 7  — ИЛИ\nprint(5 ^ 3)   # 6  — исключающее ИЛИ (различаются)\nprint(~5)      # -6 — инверсия битов: ~x == -x - 1\nprint(1 << 3)  # 8  — сдвиг влево: умножение на 2**3\nprint(8 >> 2)  # 2  — сдвиг вправо: деление на 2**2\n```",
+  "why": "Внутри компьютера числа хранятся в двоичном виде (нули и единицы). Битовые операции работают с **каждым битом отдельно**.\n\nПочему сдвиг влево — это умножение на 2: в двоичной записи каждый разряд вдвое «тяжелее» соседнего. Это как дописать ноль справа в десятичной записи: `5` → `50`, то есть ×10. А `~x = -x - 1` получается из того, как хранятся отрицательные числа (инвертировали биты и прибавили 1)."
+ },
+ {
+  "topic_no": 1,
+  "topic": "IO. Типы данных.",
+  "level": "simple",
+  "question": "Как работает оператор **?",
+  "code": "",
+  "answer": "Возведение в степень",
+  "id": 5,
+  "claude": "`a ** b` — «a в степени b». Примеры: `2 ** 3 == 8`, `2 ** -1 == 0.5`. Оператор правоассоциативный: `2 ** 3 ** 2` это `2 ** (3 ** 2)` = 512. Минус перед числом применяется *после* возведения в степень: `-2 ** 2 == -4`, а `(-2) ** 2 == 4`.",
+  "why": "Степень считается **справа налево**: `2 ** 3 ** 2` это `2 ** (3 ** 2)`. Так принято и в математике: «а в степени (b в степени c)».\n\nМинус перед числом применяется после степени: `-2 ** 2` читается как `-(2 ** 2)`, то есть `-4`. Хотите квадрат минус двойки — пишите `(-2) ** 2`."
+ },
+ {
+  "topic_no": 1,
+  "topic": "IO. Типы данных.",
+  "level": "simple",
+  "question": "Как работает and в условиях?",
+  "code": "",
+  "answer": "Если левый операнд условия ложный, то правый не будет тронут интерпретатором",
+  "id": 6,
+  "claude": "Это «ленивое вычисление» (short-circuit). Важно: `and`/`or` возвращают не `True/False`, а один из операндов:\n\n```python\nprint(0 and 5)      # 0  — левая часть ложная, правую даже не считаем\nprint(3 and 5)      # 5  — левая истинная, результат — правая часть\nprint(0 or \"x\")     # 'x'\nprint(3 or 1/0)     # 3  — деление на ноль не выполнится\n```",
+  "why": "Python вычисляет условие слева направо и **останавливается, как только результат уже ясен**. Для `and`: если левая часть ложная, то всё выражение уже ложное, правую смотреть незачем. Для `or`: если левая часть истинная, правую можно не считать.\n\nЭто экономит время и защищает от ошибок: `x and x.name` не упадёт, если `x` равен `None`. А результатом становится **сам операнд**, а не `True/False`: так удобно писать значения по умолчанию (`name or \"Guest\"`)."
+ },
+ {
+  "topic_no": 1,
+  "topic": "IO. Типы данных.",
+  "level": "simple",
+  "question": "Что будет выведено ниже?",
+  "code": "x = 8\nresult = x >> 2\nprint(result)",
+  "answer": "Битовый сдвиг вправо на n позиций эквивалентен целочисленному делению на 2^n. 8 >> 2 = 8 / 4 = 2.",
+  "id": 7,
+  "claude": "",
+  "why": "Запись числа 8 в двоичном виде: `1000`. Сдвиг вправо на 2 места отбрасывает два правых бита: остаётся `10`, то есть 2.\n\nКаждый сдвиг вправо на 1 = деление на 2 с отбрасыванием остатка: 8 → 4 → 2."
+ },
+ {
+  "topic_no": 1,
+  "topic": "IO. Типы данных.",
+  "level": "simple",
+  "question": "Какие преобразования корректны?",
+  "code": "int(\"42\"), float(\"3.14\"), int(\"3.14\"), str(123), int(342.11)",
+  "answer": "Все кроме `int(\"3.14\")`",
+  "id": 8,
+  "claude": "",
+  "why": "Шаги:\n1) `int(\"42\")` — строка с целым числом, всё хорошо.\n2) `float(\"3.14\")` — строка с десятичной дробью, всё хорошо.\n3) `int(\"3.14\")` — **ошибка**: `int` ждёт в строке именно целое число, а в `\"3.14\"` есть точка. Python не угадывает, как округлять (до 3? до 4?), и просит сделать это явно: `int(float(\"3.14\"))`.\n4) `str(123)` — любое число можно превратить в текст.\n5) `int(342.11)` — здесь не строка, а число: правило известно, дробная часть просто отбрасывается, получается 342."
+ },
+ {
+  "topic_no": 1,
+  "topic": "IO. Типы данных.",
+  "level": "simple",
+  "question": "Что выведет?",
+  "code": "list(range(2,8,2))",
+  "answer": "`[2, 4, 6]`",
+  "id": 9,
+  "claude": "",
+  "why": "`range(начало, конец, шаг)`: начало **входит**, конец **не входит**. Идём от 2 с шагом 2: 2, 4, 6. Следующим было бы 8, но 8 уже не меньше конца, поэтому стоп.\n\n`range` сам по себе «ленивый»: он не хранит все числа, а считает их по мере надобности (так экономится память). `list(...)` просит его выдать всё сразу в виде списка."
+ },
+ {
+  "topic_no": 2,
+  "topic": "Ввод-вывод с файла. Циклы и условия.",
+  "level": "simple",
+  "question": "Какие ключевые слова связанные с циклами и условиями вы знаете?",
+  "code": "",
+  "answer": "`if`, `else`, `elif`, `break`, `continue`, `for`, `while`, etc...",
+  "id": 10,
+  "claude": "",
+  "why": "Это **зарезервированные слова** с особым смыслом, поэтому нельзя назвать переменную `if` или `for`.\n\nУсловия нужны, чтобы выбирать ветку программы по данным, а циклы — чтобы не писать один и тот же код много раз. `break` и `continue` позволяют изменить обычный ход цикла."
+ },
+ {
+  "topic_no": 2,
+  "topic": "Ввод-вывод с файла. Циклы и условия.",
+  "level": "simple",
+  "question": "В чем разница между if и match?",
+  "code": "",
+  "answer": "`if` - проверка булевых выражений, `match` - соответствие паттернам в структурах.",
+  "id": 11,
+  "claude": "Пример `match`:\n\n```python\npoint = (0, 5)\nmatch point:\n    case (0, y):\n        print(\"на оси Y, y =\", y)   # сработает этот вариант\n    case (x, 0):\n        print(\"на оси X\")\n    case _:\n        print(\"где-то ещё\")\n```\n\n`match` умеет «разбирать» структуру (кортеж, список, словарь, класс) и сразу доставать из неё значения. `_` — «всё остальное».",
+  "why": "`if` отвечает на вопрос «**истинно ли** это условие?», а `match` — «**на что похожи** эти данные и из каких частей состоят?».\n\n`match` появился в Python 3.10, чтобы не писать длинные цепочки из `if isinstance(...)`, проверок длины и индексов. Вы просто описываете форму данных (шаблон), и Python сразу достаёт из неё нужные части."
+ },
+ {
+  "topic_no": 2,
+  "topic": "Ввод-вывод с файла. Циклы и условия.",
+  "level": "simple",
+  "question": "Что будет выведено?",
+  "code": "user = None\nname = user and user.get(\"name\") or \"Guest\"\nprint(f\"Hello {name}\")",
+  "answer": "Hello, Guest",
+  "id": 12,
+  "claude": "Обратите внимание: в файле опечатка — реально выведется `Hello Guest` (без запятой).\n\nПочему: `user` это `None`, `None and ...` сразу даёт `None` (ложь), а `None or \"Guest\"` даёт `\"Guest\"`.",
+  "why": "Шаги:\n1) `user` равно `None`, а `None` считается **ложью**.\n2) `user and user.get(\"name\")`: левая часть ложная, поэтому Python останавливается и не вызывает `user.get(...)` (иначе была бы ошибка, у `None` нет такого метода). Результат: `None`.\n3) `None or \"Guest\"`: левая часть ложная, значит берётся правая: `\"Guest\"`.\n\nЛовушка: если бы имя было пустой строкой `\"\"`, она тоже считается ложью, и подставился бы `Guest`."
+ },
+ {
+  "topic_no": 2,
+  "topic": "Ввод-вывод с файла. Циклы и условия.",
+  "level": "simple",
+  "question": "Как работает цикл while?",
+  "code": "",
+  "answer": "",
+  "id": 13,
+  "claude": "`while` повторяет тело цикла, пока условие истинно. Условие проверяется перед каждым проходом.\n\n```python\nn = 3\nwhile n > 0:\n    print(n)\n    n -= 1\nprint(\"Поехали!\")\n```\n\nВывод:\n\n```\n3\n2\n1\nПоехали!\n```\n\n- `break` — выйти из цикла сразу, `continue` — перейти к следующей проверке условия.\n- У цикла бывает `else`: он выполнится, если цикл закончился **без** `break`.\n- Если условие никогда не станет ложным, получится бесконечный цикл (`while True:` делают специально и выходят через `break`).",
+  "why": "Условие проверяется **перед каждым проходом**. Если оно с самого начала ложное, тело не выполнится ни разу.\n\nПоэтому внутри цикла обязательно нужно менять то, от чего зависит условие (`n -= 1`). Иначе условие всегда истинно, и цикл бесконечный.\n\n`else` у цикла срабатывает, если цикл закончился «сам», без `break`. Это удобно для задач вида «искали и не нашли»."
+ },
+ {
+  "topic_no": 2,
+  "topic": "Ввод-вывод с файла. Циклы и условия.",
+  "level": "simple",
+  "question": "Как работает цикл for?",
+  "code": "",
+  "answer": "",
+  "id": 14,
+  "claude": "`for` перебирает элементы любого итерируемого объекта (список, строка, `range`, файл, словарь...).\n\n```python\nfor letter in \"abc\":\n    print(letter)\nfor i in range(3):\n    print(i)\n```\n\nПод капотом: Python вызывает `iter()` у объекта, потом много раз `next()`, пока не придёт `StopIteration`. Как и у `while`, есть `break`, `continue` и `else`. Часто используют `enumerate(seq)` (индекс + элемент) и `zip(a, b)` (параллельный обход).",
+  "why": "Цикл `for` не считает сам. Он по очереди спрашивает у объекта «дай следующий элемент» (`iter()` и `next()`), пока объект не скажет «элементы кончились» (`StopIteration`).\n\nПоэтому один и тот же `for` одинаково работает со списками, строками, файлами и генераторами: ему важно только, что объект умеет выдавать элементы по одному."
+ },
+ {
+  "topic_no": 2,
+  "topic": "Ввод-вывод с файла. Циклы и условия.",
+  "level": "medium",
+  "question": "Что делает метод flush у файла?",
+  "code": "",
+  "answer": "",
+  "id": 15,
+  "claude": "При `f.write(...)` данные сначала попадают в **буфер** в памяти (так быстрее), а не сразу в файл. `flush()` принудительно выталкивает буфер в файл/операционную систему.\n\nНужно, например, чтобы другая программа сразу увидела записанное, или чтобы логи не потерялись при аварии. Заметки:\n- `close()` и выход из `with open(...)` делают `flush` автоматически.\n- Чтобы данные точно легли на диск, нужен ещё `os.fsync(f.fileno())`.\n- Для `print` то же делает `print(..., flush=True)`.",
+  "why": "Запись на диск медленная. Поэтому Python и операционная система сначала **накапливают данные в буфере** (в памяти) и пишут на диск большими порциями. Так быстрее.\n\nОбратная сторона: пока буфер не сброшен, данные ещё не в файле. Если программа аварийно завершится, хвост записи может пропасть. `flush()` принудительно «выталкивает» буфер."
+ },
+ {
+  "topic_no": 2,
+  "topic": "Ввод-вывод с файла. Циклы и условия.",
+  "level": "medium",
+  "question": "Что будет выведено ниже?",
+  "code": "lists = [[\"🐸\", \"🌸\"], [\"🐸\", \"🌸\", \"🌹\"], None]\n\nfor lst in lists:\n    match lst:\n        case [\"🐸\", (\"🌹\" | \"🌸\" | \"🌺\" | \"🌻\" | \"🌼\")]:\n            print(\"Лягушка и цветок\")\n        case _:\n            print(\"Не уверен\")",
+  "answer": "Лягушка и цветок\nНе уверен\nНе уверен",
+  "id": 16,
+  "claude": "",
+  "why": "Шаги:\n1) Первый элемент `[\"🐸\", \"🌸\"]`. Шаблон требует список **ровно из двух элементов**: первый `\"🐸\"`, второй — любой из перечисленных цветов (`|` значит «или»). Совпало, выводится `Лягушка и цветок`.\n2) Второй элемент `[\"🐸\", \"🌸\", \"🌹\"]`: в нём три элемента, а шаблон ждёт два. Не совпало, срабатывает `case _`, выводится `Не уверен`.\n3) Третий элемент `None` вообще не список. Опять `case _`, снова `Не уверен`.\n\n`_` в `match` подходит под всё, поэтому его пишут последним."
+ },
+ {
+  "topic_no": 2,
+  "topic": "Ввод-вывод с файла. Циклы и условия.",
+  "level": "hard",
+  "question": "Как правильно читать данные из файла, если объём файла - несколько терабайт?",
+  "code": "",
+  "answer": "",
+  "id": 17,
+  "claude": "Нельзя читать целиком (`f.read()`, `f.readlines()`) — файл не поместится в память. Нужно читать **лениво, порциями**:\n\n```python\nwith open(\"huge.txt\", encoding=\"utf-8\") as f:\n    for line in f:          # файл — итератор: за раз в памяти одна строка\n        process(line)\n```\n\nДля бинарных данных или файлов без строк — читать блоками:\n\n```python\nwith open(\"huge.bin\", \"rb\") as f:\n    while chunk := f.read(1024 * 1024):   # по 1 МБ\n        process(chunk)\n```\n\nПравила: ничего не складывать в большой список, обрабатывать и сразу писать результат дальше, использовать `with` (файл закроется), для сложной логики оформлять чтение генератором. Для поиска по огромному файлу есть ещё `mmap`.",
+  "why": "Оперативная память ограничена, а файл в терабайты в неё не влезет. Но обрабатывать файл целиком одним куском и не нужно.\n\nФайл читается **порциями**: Python берёт с диска кусок, отдаёт вам строку за строкой, потом берёт следующий кусок, а старые строки забываются. Поэтому занятая память остаётся почти постоянной, каким бы большим ни был файл. Типичная ошибка — `read()` или `readlines()`: они пытаются загрузить всё сразу."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "simple",
+  "question": "Что такое множество?",
+  "code": "",
+  "answer": "",
+  "id": 18,
+  "claude": "**Множество (`set`)** — неупорядоченная коллекция **уникальных** элементов. Элементы должны быть хешируемыми.\n\n```python\ns = {1, 2, 2, 3}\nprint(s)             # {1, 2, 3} — дубликаты исчезли\nprint(2 in s)        # True — проверка быстрая (в среднем O(1))\nprint({1, 2} | {2, 3}, {1, 2} & {2, 3}, {1, 2} - {2, 3})   # объединение, пересечение, разность\nempty = set()        # пустое множество; {} — это пустой словарь!\n```\n\nИндексов у множества нет, порядок не гарантирован. Устроено как хеш-таблица.",
+  "why": "Множество устроено как **хеш-таблица**: для каждого элемента считается число (хеш), которое подсказывает, в какую «ячейку» его положить.\n\nОтсюда все свойства:\n- проверка `x in s` быстрая: идём сразу в нужную ячейку, а не перебираем всё;\n- дубликатов нет: одинаковый элемент попадает в ту же ячейку;\n- порядка нет: ячейки расположены по хешам, а не по порядку добавления;\n- элементы должны быть хешируемыми."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "simple",
+  "question": "Что такое словарь?",
+  "code": "",
+  "answer": "",
+  "id": 19,
+  "claude": "**Словарь (`dict`)** — коллекция пар «ключ → значение». По ключу значение находится быстро (в среднем O(1)). Ключи уникальны и хешируемы, порядок вставки сохраняется (с Python 3.7).\n\n```python\nuser = {\"name\": \"Аня\", \"age\": 19}\nprint(user[\"name\"])          # Аня\nuser[\"city\"] = \"Москва\"      # добавили пару\nprint(user.get(\"phone\"))     # None — безопасное чтение\n```",
+  "why": "Словарь — та же хеш-таблица, но рядом с каждым ключом лежит значение. Путь поиска: ключ → хеш → ячейка → значение. Поэтому значение находится сразу, без перебора всех пар.\n\n`d[\"x\"]` бросает `KeyError`, если ключа нет, а `d.get(\"x\")` вместо этого тихо вернёт `None`."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "simple",
+  "question": "Какое применение множеств и словарей вы знаете?",
+  "code": "",
+  "answer": "",
+  "id": 20,
+  "claude": "**Множества:** убрать дубликаты (`set(lst)`), быстро проверять «есть ли элемент» (`x in s`), операции над наборами (пересечение, объединение, разность).\n\n**Словари:** хранить данные по именам полей (как «карточка» объекта), подсчёт частот (`Counter`), группировка, быстрый поиск по ключу, кэш/мемоизация, таблицы соответствия «что → во что», JSON-подобные данные.",
+  "why": "Главное преимущество хеш-таблицы — быстрый поиск. Чтобы понять, есть ли элемент в списке, Python сравнивает со всеми по очереди (чем длиннее список, тем дольше). Во множестве и словаре он идёт сразу в нужную ячейку.\n\nПоэтому для «есть ли это в наборе?», подсчётов, группировки и кэшей выбирают именно их."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "simple",
+  "question": "Что делает этот код?",
+  "code": "{x**2 for x in range(10) if x % 2 == 0}",
+  "answer": "",
+  "id": 21,
+  "claude": "Это **генератор множества** (set comprehension). Берёт чётные `x` из `range(10)` (0, 2, 4, 6, 8), возводит в квадрат и собирает в множество:\n\n```python\nprint({x**2 for x in range(10) if x % 2 == 0})   # {0, 4, 16, 36, 64}\n```\n\nПорядок элементов при печати множества не гарантирован.",
+  "why": "Шаги:\n1) `range(10)` даёт 0, 1, 2, ..., 9.\n2) `if x % 2 == 0` оставляет чётные: 0, 2, 4, 6, 8.\n3) `x**2` возводит каждое в квадрат: 0, 4, 16, 36, 64.\n4) Фигурные скобки и **одно** выражение (без двоеточия) значат множество. Если бы было `x: x**2`, получился бы словарь.\n\nПорядок при печати не гарантирован, потому что множество не хранит порядок."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "simple",
+  "question": "Какой объект является хешируемым?",
+  "code": "",
+  "answer": "",
+  "id": 22,
+  "claude": "Объект **хешируемый**, если:\n1. у него есть метод `__hash__` (то есть `hash(obj)` работает), и хеш не меняется за время жизни объекта;\n2. равные объекты имеют равные хеши (`a == b` ⇒ `hash(a) == hash(b)`).\n\nХешируемые: `int`, `float`, `str`, `bool`, `None`, `frozenset`, `tuple` (если все элементы внутри хешируемы). Нехешируемые: `list`, `dict`, `set`.",
+  "why": "Словарь ищет ключ **по хешу**. Если бы ключ можно было изменить после добавления, его хеш поменялся бы, и словарь стал бы искать его в другой ячейке, то есть «потерял» бы. Поэтому изменяемые объекты (`list`, `dict`, `set`) в ключи не допускаются.\n\nВторое правило: равные объекты обязаны иметь равные хеши. Иначе два равных ключа оказались бы в разных ячейках, и словарь считал бы их разными."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "simple",
+  "question": "Что может быть ключом в словаре?",
+  "code": "",
+  "answer": "",
+  "id": 23,
+  "claude": "Ключом может быть любой **хешируемый** объект: число, строка, `None`, `bool`, кортеж из хешируемых, `frozenset`, функция, класс, экземпляр обычного класса. Нельзя: `list`, `dict`, `set` — будет `TypeError: unhashable type`.",
+  "why": "Это прямое следствие того, как устроен хеш: ключом может быть всё, чей хеш не меняется за время жизни объекта.\n\nСвои классы по умолчанию тоже годятся: их хеш берётся от идентичности объекта. Но такой объект равен только самому себе."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "simple",
+  "question": "Что может быть значением в словаре?",
+  "code": "",
+  "answer": "",
+  "id": 24,
+  "claude": "Значением может быть **что угодно**: число, строка, список, другой словарь, функция, объект, `None`. Ограничений на значения нет (они нужны только ключам).",
+  "why": "Значение не участвует в поиске: оно просто лежит рядом с ключом. Ему не нужен хеш, поэтому никаких ограничений нет, можно хранить даже другой словарь или функцию."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "simple",
+  "question": "Что такое хеш?",
+  "code": "",
+  "answer": "",
+  "id": 25,
+  "claude": "**Хеш** — целое число, которое вычисляется из объекта функцией `hash(obj)`. Это «отпечаток» объекта. Словарь и множество используют хеш, чтобы сразу понять, в какой «ячейке» таблицы искать объект, а не перебирать всё подряд — отсюда скорость.\n\n```python\nprint(hash(42))        # 42\nprint(hash(\"abc\"))     # какое-то большое число (между запусками программы меняется!)\n```\n\nОдинаковые (равные) объекты обязаны давать одинаковый хеш. Разные объекты иногда могут дать одинаковый хеш — это называется **коллизия**, словарь умеет с ними справляться (дополнительно сравнивает через `==`).",
+  "why": "Идея хеша: превратить любой объект в число, по которому сразу видно, где его искать (как номер ячейки в камере хранения).\n\nРазные объекты иногда получают одинаковое число. Это называется **коллизия**. Поэтому словарю нужны обе вещи: хеш (чтобы быстро найти ячейку) и `==` (чтобы убедиться, что там именно тот ключ).\n\nХеши строк меняются при каждом запуске программы (специальная защита от атак), поэтому нельзя сохранять их в файл и надеяться, что они совпадут завтра."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "medium",
+  "question": "Как берется хеш у кортежа?",
+  "code": "",
+  "answer": "",
+  "id": 26,
+  "claude": "Хеш кортежа вычисляется из хешей его элементов (они «перемешиваются» в одно число). Поэтому:\n- равные кортежи имеют равный хеш;\n- если хотя бы один элемент нехешируемый, кортеж тоже нехешируемый.\n\n```python\nprint(hash((1, 2)) == hash((1, 2)))   # True\nhash((1, [2]))                         # TypeError: unhashable type: 'list'\n```",
+  "why": "Кортеж неизменяемый, поэтому его хеш можно посчитать один раз из хешей его элементов.\n\nНо если один из элементов нехешируемый (например, список), то хеш всего кортежа вычислить нельзя. Хешируемость «передаётся по цепочке вложенности»: внешний объект хешируем, только если хешируемо всё внутри."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "medium",
+  "question": "Что вы знаете о методах keys(), values(), items() в словаре? Какой тип у возвращаемых значений?",
+  "code": "",
+  "answer": "",
+  "id": 27,
+  "claude": "Методы возвращают **view-объекты** (объекты-представления): `dict_keys`, `dict_values`, `dict_items` — а не списки.\n\n- Это «живое окно» в словарь: если словарь изменился, view тоже показывает новые данные.\n- По ним можно итерироваться, делать `len()`, проверять `in`; индексов нет (`d.keys()[0]` — ошибка).\n- `keys()` и `items()` ведут себя как множества (можно `&`, `|`, `-`), `values()` — нет.\n- Нужен обычный список — `list(d.keys())`.\n- Менять размер словаря во время итерации нельзя: `RuntimeError`.\n\n```python\nd = {\"a\": 1, \"b\": 2}\nkeys = d.keys()\nd[\"c\"] = 3\nprint(keys)              # dict_keys(['a', 'b', 'c']) — view обновился\nprint(list(d.items()))   # [('a', 1), ('b', 2), ('c', 3)]\n```",
+  "why": "Почему возвращаются view-объекты, а не списки: **чтобы не копировать данные**. Словарь может быть огромным, и копировать его ключи при каждом вызове дорого по времени и памяти.\n\nПоэтому view всегда показывает актуальное состояние словаря («живое окно»). А запрет менять размер словаря во время обхода нужен потому, что таблица при этом перестраивается, и итерация сбилась бы."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "medium",
+  "question": "Как можно изменить кортеж?",
+  "code": "",
+  "answer": "",
+  "id": 28,
+  "claude": "Кортеж **нельзя** изменить, но можно получить новый:\n- склеить: `t = t + (4,)`;\n- через список: `lst = list(t); lst.append(4); t = tuple(lst)`.\n\nНюанс: если внутри кортежа лежит изменяемый объект, то его можно менять: `t = (1, [2]); t[1].append(3)` → `(1, [2, 3])`. Сам кортеж (набор ссылок) не меняется.",
+  "why": "Неизменяемость кортежа означает, что нельзя заменить, добавить или удалить его элементы, то есть поменять набор ссылок внутри.\n\nНо сами объекты, на которые ссылки указывают, могут быть изменяемыми, и их менять можно. А чтобы «изменить» кортеж, на деле создают новый: из старого кортежа и новых данных."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "medium",
+  "question": "Как проверить объект на хешируемость?",
+  "code": "",
+  "answer": "",
+  "id": 29,
+  "claude": "Самый надёжный способ — попробовать вычислить хеш:\n\n```python\ndef is_hashable(obj):\n    try:\n        hash(obj)\n        return True\n    except TypeError:\n        return False\n```\n\nМожно `isinstance(obj, collections.abc.Hashable)`, но он только проверяет наличие `__hash__`, а `(1, [2])` покажет `True`, хотя `hash((1, [2]))` упадёт.",
+  "why": "Честный способ узнать, хешируемый ли объект, — попробовать вычислить `hash()`. Хешируемость кортежа зависит от его **содержимого**, поэтому заранее по типу не скажешь.\n\n`isinstance(obj, Hashable)` смотрит только, есть ли у типа метод `__hash__`. У кортежа он есть, поэтому проверка даст `True` даже для `(1, [2])`, а `hash()` на нём упадёт."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "medium",
+  "question": "Как сделать множество ключом в словаре?",
+  "code": "",
+  "answer": "",
+  "id": 30,
+  "claude": "Обычное `set` нельзя (оно изменяемое, нехешируемое). Нужно превратить его в **`frozenset`** — неизменяемое множество:\n\n```python\ns = {1, 2, 3}\nd = {frozenset(s): \"значение\"}\nprint(d[frozenset({3, 2, 1})])   # значение — порядок не важен\n```",
+  "why": "Обычное множество изменяемое, значит нехешируемое, и в ключи не годится. `frozenset` — его «замороженная» версия: после создания не меняется, поэтому хеш посчитать можно.\n\nПорядок элементов не важен: множества равны независимо от порядка, а значит и хеши обязаны совпадать."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "medium",
+  "question": "Что будет храниться в итоговом словаре?",
+  "code": "{True: True, 1: 1, 1.0: 1.0}",
+  "answer": "",
+  "id": 31,
+  "claude": "Итог: `{True: 1.0}`.\n\nПочему: `True == 1 == 1.0`, и хеши у них тоже равны, значит для словаря это **один и тот же ключ**. Ключ остаётся тем, который добавили первым (`True`), а значение перезаписывается последним (`1.0`).",
+  "why": "Шаги:\n1) Добавляется ключ `True` со значением `True`.\n2) Дальше ключ `1`. Но `1 == True`, и хеши у них одинаковые (`hash(True) == 1`). Для словаря это **тот же самый ключ**. Значение заменяется на `1`, а сам ключ остаётся прежним (`True`).\n3) Ключ `1.0`: `1.0 == 1` и хеш тоже `1`. Снова тот же ключ, значение заменяется на `1.0`.\n\nИтог: `{True: 1.0}`. Причина: `bool` — подвид `int`, `True` это по сути `1`."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "medium",
+  "question": "Что будет напечатано в примере ниже?",
+  "code": "print(hash(-1), hash(-2))\ndata = {\n    -1: \"minus one\",\n    -2: \"minus two\"\n}\nprint(data)",
+  "answer": "",
+  "id": 32,
+  "claude": "Вывод:\n\n```\n-2 -2\n{-1: 'minus one', -2: 'minus two'}\n```\n\nВ CPython `hash(-1)` равно `-2` (число `-1` внутри зарезервировано как признак ошибки), поэтому у `-1` и `-2` одинаковый хеш — это коллизия. Но сами ключи разные (`-1 != -2`), поэтому словарь хранит обе пары.",
+  "why": "В реализации CPython значение `-1` используется внутри как признак «хеш не вычислился». Чтобы не путать, настоящий хеш `-1` заменили на `-2`. Поэтому `hash(-1) == hash(-2) == -2`.\n\nЭто коллизия, но словарь не ломается: при совпадении хешей он сравнивает сами ключи через `==`, видит, что `-1 != -2`, и хранит оба.\n\nЗапомните: **равные объекты → одинаковые хеши**, но не наоборот."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "medium",
+  "question": "Что из этого может быть ключом в словаре?",
+  "code": "d = {\n    1: \"int\",\n    \"a\": \"str\",\n    (1, 2): \"tuple\",\n    frozenset([1, 2]): \"frozenset\",\n    None: None,\n}",
+  "answer": "",
+  "id": 33,
+  "claude": "**Все** варианты могут быть ключами: `1` (int), `\"a\"` (str), `(1, 2)` (кортеж из хешируемых), `frozenset([1, 2])`, `None` — всё хешируемое. Код отработает без ошибок.",
+  "why": "Все пять ключей хешируемые:\n- `1` и `\"a\"` — неизменяемые;\n- `(1, 2)` — кортеж из хешируемых элементов;\n- `frozenset([1, 2])` — неизменяемое множество;\n- `None` — особый неизменяемый объект.\n\nПоэтому ошибки нет, словарь создаётся."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "medium",
+  "question": "Что выведет код и почему?",
+  "code": "my_dict = {}\nmy_dict[([1, 2])] = \"hello\"\nprint(my_dict)",
+  "answer": "",
+  "id": 34,
+  "claude": "Ошибка `TypeError: cannot use 'list' as a dict key (unhashable type: 'list')`. Скобки вокруг `[1, 2]` ничего не меняют — это всё равно список, он изменяемый и нехешируемый. Вместо него можно использовать кортеж `(1, 2)`.",
+  "why": "Шаги:\n1) Python вычисляет `hash([1, 2])`.\n2) У списка метод `__hash__` отключён намеренно, поэтому получаем `TypeError: unhashable type: 'list'`.\n\nСкобки вокруг `[1, 2]` ничего не меняют: кортеж создают **запятые** (`(1, 2)`), а не скобки. Список нехешируем потому, что он изменяемый: его хеш менялся бы после правки."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "medium",
+  "question": "Что эффективнее и почему?",
+  "code": "# Способ 1\nif key in my_dict:\n    ...\n\n# Способ 2\nif my_dict.get(key) is not None:\n    ...",
+  "answer": "",
+  "id": 35,
+  "claude": "Эффективнее и правильнее **способ 1** (`key in my_dict`): один быстрый поиск по хешу, сразу даёт `True/False`.\n\nСпособ 2 вызывает метод `get` (лишние накладные расходы) и ещё **логически другой**: если ключ есть, но его значение `None`, он решит, что ключа нет. `get` нужен, когда надо получить само значение.",
+  "why": "`key in my_dict` — один поиск по хешу, ответ сразу «да/нет».\n\n`my_dict.get(key)` — вызов метода (он медленнее обычного оператора) плюс ещё сравнение с `None`. И у него есть логическая ошибка: если ключ есть, но его значение `None` (например, `{\"a\": None}`), то `get` скажет «ключа нет». Для проверки наличия правильно использовать `in`."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "hard",
+  "question": "Что вы знаете о методах keys(), values(), items() в словаре? Какой тип у возвращаемых значений?",
+  "code": "",
+  "answer": "",
+  "id": 36,
+  "claude": "Те же методы, что и в вопросе выше: `keys()`, `values()`, `items()` возвращают **view-объекты** (`dict_keys`, `dict_values`, `dict_items`) — динамические «окна» в словарь, а не копии-списки.\n\n```python\nd = {\"a\": 1}\nv = d.values()\nd[\"b\"] = 2\nprint(v)               # dict_values([1, 2]) — видит изменения\nprint(list(d.items())) # [('a', 1), ('b', 2)]\n```\n\n- Поддерживают итерацию, `len()`, `in`; индексировать нельзя.\n- `keys()` и `items()` ведут себя как множества (`d1.keys() & d2.keys()` — общие ключи).\n- Менять размер словаря во время обхода нельзя (`RuntimeError`).",
+  "why": "То же, что в предыдущем вопросе про `keys()`, `values()`, `items()`: view-объекты нужны, чтобы **не копировать** данные и всегда видеть актуальное содержимое словаря.\n\nРазмер словаря нельзя менять во время обхода: внутренняя таблица перестроится, и итерация сломается (`RuntimeError`)."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "hard",
+  "question": "Верно ли утверждение, что неизменяемые объекты являются хешируемыми?",
+  "code": "",
+  "answer": "",
+  "id": 37,
+  "claude": "**Неверно.** Хешируемость и неизменяемость — не одно и то же.\n\nПример: кортеж неизменяем, но `(1, [2])` нехешируем, потому что внутри лежит список:\n\n```python\nhash((1, [2]))   # TypeError: unhashable type: 'list'\n```\n\nВерно так: стандартные *изменяемые* контейнеры (`list`, `dict`, `set`) нехешируемы, а неизменяемые *обычно* хешируемы, если и все их элементы хешируемы. Ещё деталь: если в своём классе определить `__eq__` и не определить `__hash__`, объект станет нехешируемым.",
+  "why": "Хешируемость требует, чтобы хеш можно было **вычислить** и чтобы он не менялся. У кортежа хеш считается из хешей элементов. Если внутри лежит список, вычислить нельзя.\n\nВыходит, «неизменяемый» относится только к самому кортежу (набору ссылок), а не ко всему, что внутри. Поэтому утверждение неверно."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "hard",
+  "question": "Почему мы можем добавлять сколько угодно элементов в список, словарь или множество?",
+  "code": "",
+  "answer": "",
+  "id": 38,
+  "claude": "Эти структуры хранят ссылки в **динамически расширяемой** памяти:\n- **Список** — массив ссылок с запасом свободных ячеек. Когда место кончается, Python выделяет массив побольше (примерно +12%) и копирует ссылки. Поэтому `append` в среднем работает за O(1).\n- **Словарь и множество** — хеш-таблицы. Когда таблица заполнена примерно на 2/3, она увеличивается и все элементы раскладываются заново (rehash).\n\nОграничение — только размер доступной памяти.",
+  "why": "Контейнеры хранят только **ссылки**, а сами данные лежат отдельными объектами. Когда место в списке заканчивается, Python берёт память побольше и переносит ссылки (как пересадить пассажиров в автобус побольше).\n\nЗапас делают с избытком намеренно: если расширять на одну ячейку, каждый `append` копировал бы весь список. С запасом копирование происходит редко, поэтому добавление в среднем очень быстрое. У словаря и множества тоже: когда таблица заполнена примерно на 2/3, она увеличивается и элементы раскладываются заново."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "hard",
+  "question": "Как развернуть значения и ключи местами в словаре? В чем могут быть проблемы?",
+  "code": "",
+  "answer": "",
+  "id": 39,
+  "claude": "```python\nd = {\"a\": 1, \"b\": 2}\ninverted = {v: k for k, v in d.items()}   # {1: 'a', 2: 'b'}\n```\n\nПроблемы:\n1. **Значения могут повторяться**: `{\"a\": 1, \"b\": 1}` → `{1: 'b'}`, данные потеряны.\n2. **Значения могут быть нехешируемыми** (список, словарь) — они не могут стать ключами → `TypeError`.\n\nРешение для повторов — собирать списки: `defaultdict(list)` и `inv[v].append(k)`.",
+  "why": "Ключи словаря **уникальны**, а значения могут повторяться. Когда значения становятся ключами, одинаковые значения «сливаются»: остаётся последняя пара, а остальные теряются.\n\nИ ещё: ключи обязаны быть хешируемыми, а значения были любыми. Если значение было списком, оно не может стать ключом (`TypeError`). Поэтому в общем случае безопаснее делать словарь «значение → список ключей»."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "hard",
+  "question": "Какой из способов создать словарь валидный?",
+  "code": "(\n    {None: None},\n    {(1, 2, []): None},\n    {int(): None},\n    {input: None},\n    {frozenset(): None},\n    {3: None},\n    {\"key\": None},\n    {int: None},\n)",
+  "answer": "",
+  "id": 40,
+  "claude": "Валидны все, кроме второго.\n\n- `{None: None}` ✔\n- `{(1, 2, []): None}` ✘ — в кортеже лежит список, кортеж нехешируем → `TypeError`\n- `{int(): None}` ✔ (`int()` это `0`)\n- `{input: None}` ✔ (функции хешируемы)\n- `{frozenset(): None}` ✔\n- `{3: None}` ✔, `{\"key\": None}` ✔\n- `{int: None}` ✔ (классы хешируемы)",
+  "why": "Правило одно: ключ должен быть хешируемым. Проверяем каждый вариант:\n- `None`, `3`, `\"key\"` — неизменяемые, подходят;\n- `int()` — это вызов, который возвращает число `0`, подходит;\n- `input` — это функция, а функции хешируемы;\n- `int` — это класс (тоже объект), хешируем;\n- `frozenset()` — неизменяемое множество, подходит;\n- `(1, 2, [])` — кортеж, но внутри **список**. Хеш кортежа считается из хешей элементов, а у списка хеша нет, значит ошибка."
+ },
+ {
+  "topic_no": 3,
+  "topic": "Контейнеры.",
+  "level": "hard",
+  "question": "Что выведет этот код?",
+  "code": "class Point:\n    def __init__(self, x, y):\n        self.x = x\n        self.y = y\n\np1 = Point(1, 2)\np2 = Point(1, 2)\nmy_dict = {p1: \"hello\"}\nprint(my_dict.get(p2))",
+  "answer": "",
+  "id": 41,
+  "claude": "Выведется `None`.\n\nУ обычного класса без `__eq__` и `__hash__` равенство и хеш определяются по **идентичности** (адресу в памяти). `p1` и `p2` — разные объекты, хотя поля у них одинаковые, поэтому по `p2` в словаре ничего не найдено, `get` возвращает `None`.\n\nЧтобы нашёлся, нужно определить:\n\n```python\ndef __eq__(self, other):\n    return (self.x, self.y) == (other.x, other.y)\ndef __hash__(self):\n    return hash((self.x, self.y))\n```",
+  "why": "Шаги:\n1) У класса без своих `__eq__` и `__hash__` Python использует стандартные: «равны» значит «это один и тот же объект», а хеш берётся от адреса объекта в памяти.\n2) `p1` и `p2` — два **разных** объекта (мы создали их двумя вызовами), хотя поля одинаковые. У них разные хеши.\n3) Поиск по `p2` идёт в другую ячейку, ключа там нет, `get` возвращает `None`.\n\nPython не сравнивает поля сам: он не знает, считаете ли вы такие объекты одинаковыми. Если считаете, нужно описать это в `__eq__` и согласованно в `__hash__`."
+ },
+ {
+  "topic_no": 4,
+  "topic": "Ссылки. Изменяемость.",
+  "level": "simple",
+  "question": "Что выведет этот код?",
+  "code": "a = [1, 2, 3]\nb = a\nb.append(4)\nprint(len(a))",
+  "answer": "",
+  "id": 42,
+  "claude": "Выведется `4`.\n\n`b = a` не копирует список, а делает вторую ссылку на тот же объект. `b.append(4)` меняет этот общий список, поэтому `len(a)` тоже равна 4.",
+  "why": "Переменная в Python — это **ярлык на объекте**. Запись `b = a` вешает на тот же список второй ярлык, копия не создаётся.\n\n`b.append(4)` меняет сам список, а не ярлык, поэтому изменение видно и через `a`. Длина стала 4."
+ },
+ {
+  "topic_no": 4,
+  "topic": "Ссылки. Изменяемость.",
+  "level": "simple",
+  "question": "Что выведет этот код?",
+  "code": "x = 5\ny = x\ny += 1\nprint(x)",
+  "answer": "",
+  "id": 43,
+  "claude": "Выведется `5`.\n\n`int` неизменяемый. `y = x` — `y` ссылается на то же число 5. Но `y += 1` не меняет число, а создаёт новое (6) и привязывает `y` к нему. `x` по-прежнему ссылается на 5.",
+  "why": "Шаги:\n1) `x = 5`: ярлык `x` указывает на число 5.\n2) `y = x`: теперь два ярлыка на одно число.\n3) `y += 1` для чисел значит `y = y + 1`. Число 5 менять нельзя, поэтому создаётся **новое** число 6, и ярлык `y` перевешивается на него.\n4) `x` по-прежнему указывает на 5.\n\nС неизменяемыми объектами «изменить» всегда значит «создать новый», поэтому два имени друг другу не мешают."
+ },
+ {
+  "topic_no": 4,
+  "topic": "Ссылки. Изменяемость.",
+  "level": "simple",
+  "question": "Что такое переменная?",
+  "code": "",
+  "answer": "",
+  "id": 44,
+  "claude": "В Python переменная — это **имя (ярлык)**, которое ссылается на объект в памяти. Это не «коробка со значением». Присваивание `x = 5` значит «привязать имя `x` к объекту 5». Одно имя может ссылаться на разные объекты со временем, а несколько имён могут ссылаться на один объект (`b = a`).",
+  "why": "Модель «ярлык на объекте» объясняет многие странности Python: присваивание ничего не копирует; изменение объекта через одно имя видно через все другие имена; `is` проверяет, указывают ли два ярлыка на один и тот же объект."
+ },
+ {
+  "topic_no": 4,
+  "topic": "Ссылки. Изменяемость.",
+  "level": "simple",
+  "question": "Как проверить что две переменные ссылаются на один и тот же объект?",
+  "code": "",
+  "answer": "",
+  "id": 45,
+  "claude": "Оператором **`is`**: `a is b` истинно, если оба имени ссылаются на один и тот же объект. Можно сравнить и адреса: `id(a) == id(b)`.\n\n```python\na = [1]; b = a; c = [1]\nprint(a is b)   # True\nprint(a is c)   # False (равны по значению, но объекты разные)\nprint(a == c)   # True\n```",
+  "why": "`is` сравнивает **адреса** объектов («это один и тот же объект?»), а `==` спрашивает у объекта, равен ли он другому по значению (вызывает `__eq__`).\n\nПоэтому два разных списка с одинаковым содержимым дают `==` → `True`, но `is` → `False`."
+ },
+ {
+  "topic_no": 4,
+  "topic": "Ссылки. Изменяемость.",
+  "level": "simple",
+  "question": "Что выведет этот код?",
+  "code": "a = [1, 2]\nb = [3, 4]\nc = a + b\na.append(5)\nprint(c)",
+  "answer": "",
+  "id": 46,
+  "claude": "Выведется `[1, 2, 3, 4]`.\n\n`a + b` создаёт **новый** список `c`. Дальнейшее изменение `a` (`a.append(5)`) на `c` не влияет.",
+  "why": "Оператор `+` для списков создаёт **новый** список из элементов обоих. `c` — отдельный объект, не связанный с `a`.\n\nПоэтому `a.append(5)` меняет только `a`. Если бы мы написали `c = a`, ярлык был бы общий, и тогда `c` тоже изменился бы."
+ },
+ {
+  "topic_no": 4,
+  "topic": "Ссылки. Изменяемость.",
+  "level": "medium",
+  "question": "В чем разница между поверхностным и глубоким копированием?",
+  "code": "",
+  "answer": "",
+  "id": 47,
+  "claude": "- **Поверхностная копия** (`copy.copy(x)`, `x.copy()`, `x[:]`, `list(x)`): создаётся новый внешний объект, но вложенные объекты **общие** (копируются ссылки).\n- **Глубокая копия** (`copy.deepcopy(x)`): рекурсивно копирует и вложенные объекты — полностью независимая копия.\n\n```python\nimport copy\na = [[1, 2], [3]]\nshallow = copy.copy(a)\ndeep = copy.deepcopy(a)\na[0].append(99)\nprint(shallow)  # [[1, 2, 99], [3]] — внутренний список общий\nprint(deep)     # [[1, 2], [3]]     — не изменился\n```",
+  "why": "Копия контейнера копирует только **ссылки** на его элементы. Для вложенных объектов это значит, что оба контейнера указывают на одни и те же внутренние объекты (так работает поверхностная копия).\n\n`deepcopy` проходит по всем уровням вложенности и копирует каждый объект (запоминая уже скопированные, чтобы не зациклиться). Она дороже по времени и памяти, поэтому по умолчанию копирование поверхностное."
+ },
+ {
+  "topic_no": 4,
+  "topic": "Ссылки. Изменяемость.",
+  "level": "medium",
+  "question": "Можно ли сравнивать объекты при помощи is?",
+  "code": "",
+  "answer": "",
+  "id": 48,
+  "claude": "Можно, но `is` проверяет **тождество** (это один и тот же объект?), а `==` — **равенство значений**. `is` правильно использовать для сравнения с `None`, `True`, `False`: `if x is None`.\n\nДля чисел и строк использовать `is` нельзя: Python иногда переиспользует одинаковые объекты (кэш маленьких чисел, интернирование строк), иногда нет, и результат непредсказуем.\n\n```python\na = [1]; b = [1]\nprint(a == b, a is b)    # True False\n```",
+  "why": "Для экономии Python **кэширует** маленькие целые числа (от -5 до 256) и некоторые строки. Поэтому `a is b` иногда внезапно даёт `True`, а в похожем случае `False`. Это деталь реализации, на неё нельзя полагаться.\n\nДля `None`, `True` и `False` гарантировано существует ровно один объект, поэтому `x is None` — правильная проверка. А значения чисел и строк сравнивайте через `==`."
+ },
+ {
+  "topic_no": 4,
+  "topic": "Ссылки. Изменяемость.",
+  "level": "medium",
+  "question": "Что выведет код и почему?",
+  "code": "def modify(lst):\n    lst.append(4)\n    lst = [5, 6, 7]\n\nmy_list = [1, 2, 3]\nmodify(my_list)\nprint(my_list)",
+  "answer": "",
+  "id": 49,
+  "claude": "Выведется `[1, 2, 3, 4]`.\n\n`lst.append(4)` меняет объект, на который указывает и `my_list` (общий объект) — изменение видно снаружи. А `lst = [5, 6, 7]` лишь привязывает *локальное имя* `lst` к новому списку, внешний `my_list` не затрагивается.",
+  "why": "Шаги:\n1) Передаём `my_list`: параметр `lst` становится **вторым ярлыком** на тот же список.\n2) `lst.append(4)` меняет сам список, это видно и через `my_list`.\n3) `lst = [5, 6, 7]` вешает ярлык `lst` на **новый** список. Внешний `my_list` остаётся на старом.\n\nВывод: функция может **изменить** переданный объект, но не может переназначить внешнюю переменную."
+ },
+ {
+  "topic_no": 4,
+  "topic": "Ссылки. Изменяемость.",
+  "level": "medium",
+  "question": "Что выведет код и почему?",
+  "code": "a = [[0] * 5] * 5\na[0][1] = 2\na",
+  "answer": "",
+  "id": 50,
+  "claude": "```\n[[0, 2, 0, 0, 0], [0, 2, 0, 0, 0], [0, 2, 0, 0, 0], [0, 2, 0, 0, 0], [0, 2, 0, 0, 0]]\n```\n\n`[[0] * 5] * 5` создаёт **5 ссылок на один и тот же внутренний список**. Поэтому изменение `a[0][1]` видно во всех строках.\n\nПравильно: `[[0] * 5 for _ in range(5)]` — на каждом шаге создаётся новый список.",
+  "why": "Шаги:\n1) `[0] * 5` — одна строка `[0, 0, 0, 0, 0]`.\n2) Внешнее `* 5` повторяет **элемент** пять раз, но элемент — это ссылка. Получилось 5 ссылок на одну и ту же строку.\n3) `a[0][1] = 2` меняет эту единственную строку, а видна она в пяти местах.\n\nВ `[[0]*5 for _ in range(5)]` выражение вычисляется заново на каждом шаге, поэтому строки получаются разными."
+ },
+ {
+  "topic_no": 4,
+  "topic": "Ссылки. Изменяемость.",
+  "level": "medium",
+  "question": "Что выведет код и почему?",
+  "code": "a = [10, 20]\nb = [a, 30]\na.append(b)\nprint(a[2][0][2][0][2])",
+  "answer": "`[[10, 20, [...]], 30]`",
+  "id": 51,
+  "claude": "Дополнение: разбор цепочки. `a[2]` — это `b`; `b[0]` — снова `a`; значит `a[2][0][2][0][2]` это всё тот же `b`. `b = [a, 30]`, а `a` содержит `b` — получилась **циклическая ссылка**. Поэтому при печати Python вместо бесконечной рекурсии пишет `[...]`.",
+  "why": "Шаги: `a[2]` — это `b`, `b[0]` — снова `a`, и так по кругу. Каждые два шага возвращают нас к тому же `a` или `b`, а в конце цепочки остаётся `b`, то есть `[a, 30]`.\n\nПолучилась **циклическая ссылка**: `a` содержит `b`, а `b` содержит `a`. Чтобы не уйти в бесконечную печать, Python запоминает уже встреченные объекты и вместо повтора пишет `[...]`."
+ },
+ {
+  "topic_no": 4,
+  "topic": "Ссылки. Изменяемость.",
+  "level": "hard",
+  "question": "Как устроен список под капотом? Почему мы можем хранить объекты разных типов?",
+  "code": "",
+  "answer": "",
+  "id": 52,
+  "claude": "Список в CPython — **динамический массив указателей (ссылок)** на объекты. Он хранит не сами значения, а адреса объектов, плюс длину и выделенный размер. Поэтому в одном списке могут лежать объекты любых типов: все ссылки одинакового размера.\n\n- Доступ по индексу — O(1).\n- `append` — в среднем O(1) (массив растёт с запасом).\n- Вставка/удаление в начале или середине — O(n) (надо сдвигать элементы).",
+  "why": "Список хранит не значения, а **ссылки** (адреса) на объекты, и все ссылки одного размера. Поэтому в одном списке спокойно лежат числа, строки и другие списки: размеры самих объектов не важны.\n\nЦена: чтобы дойти до значения, нужен лишний переход по ссылке. Поэтому, например, массивы из библиотеки `numpy` для чисел быстрее списков."
+ },
+ {
+  "topic_no": 4,
+  "topic": "Ссылки. Изменяемость.",
+  "level": "hard",
+  "question": "Как работает вставка в список?",
+  "code": "",
+  "answer": "",
+  "id": 53,
+  "claude": "`lst.insert(i, x)`: если места нет, массив расширяется; затем все элементы начиная с позиции `i` **сдвигаются на одну ячейку вправо**, и в освободившуюся ячейку записывается `x`. Сложность O(n) (чем ближе к началу, тем больше сдвигать). Вставка в конец (`append`) — в среднем O(1). Если нужны частые вставки/удаления в начале, лучше `collections.deque`.",
+  "why": "Элементы списка лежат в памяти **подряд**, как места в одном ряду кинотеатра. Чтобы вставить в середину, нужно сдвинуть всех правее.\n\nЧем ближе вставка к началу, тем больше элементов надо сдвигать (время растёт вместе с длиной списка). Вставка в конец дёшева: двигать нечего."
+ },
+ {
+  "topic_no": 4,
+  "topic": "Ссылки. Изменяемость.",
+  "level": "hard",
+  "question": "Что выведет код и почему?",
+  "code": "t = (1, 2, [3, 4])\nt += [5, 6]\nprint(t)",
+  "answer": "",
+  "id": 54,
+  "claude": "Ошибка: `TypeError: can only concatenate tuple (not \"list\") to tuple`. Кортеж `t` остаётся без изменений: `(1, 2, [3, 4])`.\n\nПочему: у кортежа нет `+=` «на месте», поэтому `t += [5, 6]` — это `t = t + [5, 6]`, а складывать кортеж со списком нельзя.\n\nИзвестная ловушка рядом: `t[2] += [5, 6]` — список внутри *изменится* (`[3, 4, 5, 6]`), а потом всё равно будет `TypeError`, потому что присвоить результат элементу кортежа нельзя.",
+  "why": "Шаги:\n1) `t += [5, 6]` сначала пробует «изменить на месте» (`__iadd__`). У кортежа такого метода нет.\n2) Тогда Python выполняет `t = t + [5, 6]`.\n3) Кортеж и список складывать нельзя (непонятно, какого типа получится результат), поэтому `TypeError`. Присваивание не дошло до выполнения, `t` остался прежним.\n\nЛовушка с `t[2] += [5, 6]`: список внутри меняется на месте и возвращает себя, а потом Python пытается записать результат обратно в кортеж, и это запрещено. В итоге ошибка, но список уже изменён."
+ },
+ {
+  "topic_no": 4,
+  "topic": "Ссылки. Изменяемость.",
+  "level": "hard",
+  "question": "Что выведет код и почему?",
+  "code": "def create_functions():\n    return [lambda x: x + i for i in range(3)]\n\nfunctions = create_functions()\nresults = [f(10) for f in functions]\nprint(results)",
+  "answer": "",
+  "id": 55,
+  "claude": "Выведется `[12, 12, 12]`.\n\nЛямбда запоминает не значение `i`, а саму **переменную** `i` (замыкание с «поздним связыванием»). Значение берётся в момент вызова, а к этому времени цикл закончился и `i == 2`, поэтому всюду `10 + 2`.\n\nИсправление — «заморозить» значение через аргумент по умолчанию:\n\n```python\n[lambda x, i=i: x + i for i in range(3)]   # результат [10, 11, 12]\n```",
+  "why": "Шаги:\n1) Создаётся три лямбды. Каждая запоминает не число, а **саму переменную** `i`.\n2) Цикл заканчивается, в `i` лежит 2.\n3) При вызове `f(10)` лямбда в этот момент смотрит, чему равно `i`: двойке. Получается `10 + 2 = 12` у всех трёх.\n\nPython ищет значение переменной в момент **вызова**, а не создания функции. Параметр по умолчанию (`i=i`) вычисляется при создании, поэтому он «замораживает» нужное значение."
+ },
+ {
+  "topic_no": 4,
+  "topic": "Ссылки. Изменяемость.",
+  "level": "hard",
+  "question": "Что такое рекурсия. Какое у рекурсии должно быть обязательное свойство?",
+  "code": "",
+  "answer": "",
+  "id": 56,
+  "claude": "**Рекурсия** — когда функция вызывает саму себя.\n\nОбязательное свойство — **базовый случай** (условие остановки без дальнейшего вызова), и каждый вызов должен приближаться к нему. Иначе рекурсия бесконечна → `RecursionError` (лимит около 1000 вызовов, `sys.getrecursionlimit()`).\n\n```python\ndef factorial(n):\n    if n <= 1:              # базовый случай\n        return 1\n    return n * factorial(n - 1)\n\nprint(factorial(5))   # 120\n```",
+  "why": "Каждый вызов функции получает свой «кадр» в памяти (место под локальные переменные). Без условия остановки кадры копятся, пока не упрёмся в лимит, поставленный для защиты от переполнения памяти: `RecursionError`.\n\nИдея рекурсии: свести задачу к меньшей такой же. Когда дальше уменьшать нельзя (`n <= 1`), ответ известен сразу, без нового вызова. Это и есть базовый случай."
+ },
+ {
+  "topic_no": 5,
+  "topic": "Функции.",
+  "level": "simple",
+  "question": "Можно ли принимать функцию в качестве аргумента и возвращать из функции? Почему?",
+  "code": "",
+  "answer": "",
+  "id": 57,
+  "claude": "**Да.** В Python функции — объекты «первого класса»: это обычные объекты, их можно присваивать переменным, класть в списки и словари, передавать в другие функции и возвращать из них. Потому что `def` создаёт объект типа `function`.\n\n```python\ndef apply(f, x):\n    return f(x)\n\nprint(apply(len, \"hello\"))   # 5\nprint(apply(str.upper, \"hi\"))  # HI\n```",
+  "why": "`def` создаёт объект-функцию и привязывает к нему имя, так же как `x = 5` привязывает имя к числу. А раз это обычный объект, с ним можно делать всё, что с объектами: передавать, возвращать, хранить в списках.\n\nНа этом держатся декораторы, колбэки и `sorted(..., key=...)`."
+ },
+ {
+  "topic_no": 5,
+  "topic": "Функции.",
+  "level": "simple",
+  "question": "Функция - это изменяемый или неизменяемый объект?",
+  "code": "",
+  "answer": "",
+  "id": 58,
+  "claude": "Функция — **изменяемый** объект: у неё есть собственные атрибуты, которые можно добавлять и менять.\n\n```python\ndef f(): pass\nf.calls = 0       # добавили атрибут\nf.calls += 1\nprint(f.calls)    # 1\n```\n\nХотя на практике менять её код (`__code__`) обычно не нужно.",
+  "why": "У функции, как у любого объекта, есть собственный словарь атрибутов (`__dict__`), поэтому в неё можно добавлять поля. В этом смысле она изменяема.\n\nКод тела функции после компиляции обычно не меняют, отсюда и путаница: «менять код» и «добавлять атрибуты» это разные вещи."
+ },
+ {
+  "topic_no": 5,
+  "topic": "Функции.",
+  "level": "simple",
+  "question": "Что выведет код и почему?",
+  "code": "def func(x):\n    x = x + 1\n    return x\n\nx = 5\nfunc(x)\nprint(x)",
+  "answer": "",
+  "id": 59,
+  "claude": "Выведется `5`.\n\nВнутри функции `x` — локальное имя. `x = x + 1` создаёт новое число 6, привязывает к нему локальный `x` и возвращает его. Но результат вызова `func(x)` нигде не сохранён, а внешний `x` ссылается на неизменяемое `5`.",
+  "why": "Шаги:\n1) Снаружи `x` указывает на 5.\n2) Внутри функции `x` — **другой ярлык** на то же число 5 (у функции своя область имён).\n3) `x = x + 1` создаёт число 6 и вешает на него **локальный** ярлык. Внешний `x` не затронут.\n4) Результат вернулся, но нигде не сохранён, поэтому потерялся.\n\n`print(x)` показывает внешний `x`: 5."
+ },
+ {
+  "topic_no": 5,
+  "topic": "Функции.",
+  "level": "simple",
+  "question": "Чем отличается return от print внутри функции?",
+  "code": "",
+  "answer": "",
+  "id": 60,
+  "claude": "- `return` **отдаёт значение** вызвавшему коду (его можно сохранить, использовать дальше) и завершает функцию.\n- `print` **только выводит текст** на экран. Функция при этом вернёт `None`.\n\n```python\ndef a(): return 5\ndef b(): print(5)\nx = a()   # x == 5\ny = b()   # на экране 5, но y == None\n```",
+  "why": "`return` отдаёт значение в то место, откуда функцию вызвали, и там его можно использовать дальше (сложить, записать в переменную). `print` только выводит текст на экран, а значения не отдаёт.\n\nЧастая ошибка новичков: вместо `return` написать `print`. Результат на экране виден, но использовать его в программе нельзя (там будет `None`)."
+ },
+ {
+  "topic_no": 5,
+  "topic": "Функции.",
+  "level": "simple",
+  "question": "Что такое аргументы по умолчанию в функции? Для чего используются и в чем их особенность?",
+  "code": "",
+  "answer": "",
+  "id": 61,
+  "claude": "**Аргументы по умолчанию** — значения, которые подставляются, если аргумент не передали: `def greet(name=\"друг\")`.\n\nОсобенность: значение вычисляется **один раз** — при определении функции, а не при каждом вызове. Поэтому изменяемое значение по умолчанию (`[]`, `{}`) «запоминается» между вызовами. Правильный приём:\n\n```python\ndef add_item(item, items=None):\n    if items is None:\n        items = []\n    items.append(item)\n    return items\n```",
+  "why": "Значение по умолчанию создаётся один раз, когда Python выполняет `def`, и сохраняется в самой функции. На каждом вызове оно **не создаётся заново**.\n\nДля неизменяемых значений (числа, `None`) это безопасно. Для изменяемых (`[]`, `{}`) получается сюрприз: изменили один раз, и изменение остаётся в следующих вызовах. Стандартный выход: поставить `None` и создать список внутри функции."
+ },
+ {
+  "topic_no": 5,
+  "topic": "Функции.",
+  "level": "simple",
+  "question": "Что выведет этот код и почему?",
+  "code": "def test():\n    pass\n\nresult = test()\nprint(result)",
+  "answer": "",
+  "id": 62,
+  "claude": "Выведется `None`.\n\nФункция без `return` (или с пустым `return`) возвращает `None`. `pass` ничего не делает.",
+  "why": "Если в функции нет `return`, она доходит до конца и по умолчанию возвращает `None` («ничего»). `pass` — это пустая заглушка, она ничего не делает. Поэтому `result` равно `None`."
+ },
+ {
+  "topic_no": 5,
+  "topic": "Функции.",
+  "level": "medium",
+  "question": "Что выведет этот код и почему?",
+  "code": "def add_item(item, items=[]):\n    items.append(item)\n    return items\n\nprint(add_item(1))\nprint(add_item(2))",
+  "answer": "",
+  "id": 63,
+  "claude": "Вывод:\n\n```\n[1]\n[1, 2]\n```\n\nСписок `items=[]` создаётся один раз при определении функции, и второй вызов продолжает использовать тот же список. Поэтому в нём уже есть `1`. Исправление: `items=None` и создание списка внутри (см. вопрос про аргументы по умолчанию).",
+  "why": "Шаги:\n1) Когда Python выполняет `def`, он один раз создаёт пустой список и привязывает его к `items` по умолчанию.\n2) Первый вызов добавляет `1` в этот список: `[1]`.\n3) Второй вызов снова берёт тот же самый список (он уже содержит `1`) и добавляет `2`: `[1, 2]`.\n\nТо есть между вызовами список не сбрасывается."
+ },
+ {
+  "topic_no": 5,
+  "topic": "Функции.",
+  "level": "medium",
+  "question": "Что выведет этот код и почему?",
+  "code": "def func(a, b, c):\n    return a + b + c\n\nprint(func(a=1, 2, 3))",
+  "answer": "",
+  "id": 64,
+  "claude": "Программа даже не запустится: `SyntaxError: positional argument follows keyword argument`.\n\nПозиционные аргументы (`2, 3`) нельзя писать после именованных (`a=1`). Правильно: `func(1, 2, 3)` или `func(1, b=2, c=3)`.",
+  "why": "Правило синтаксиса: **сначала позиционные аргументы, потом именованные**. Иначе непонятно, что значит `2`: второй параметр или первый, раз `a` уже задан?\n\nPython не угадывает и сообщает об ошибке ещё при разборе кода, поэтому даже `print` не успевает выполниться."
+ },
+ {
+  "topic_no": 5,
+  "topic": "Функции.",
+  "level": "medium",
+  "question": "Что такое *args и **kwargs? Как они работаю?",
+  "code": "",
+  "answer": "",
+  "id": 65,
+  "claude": "- `*args` — собирает **лишние позиционные** аргументы в **кортеж**.\n- `**kwargs` — собирает **лишние именованные** аргументы в **словарь**.\n\n```python\ndef show(*args, **kwargs):\n    print(args, kwargs)\n\nshow(1, 2, x=10, y=20)   # (1, 2) {'x': 10, 'y': 20}\n```\n\nТе же звёздочки работают при вызове для «распаковки»: `f(*[1, 2, 3])`, `f(**{\"a\": 1})`. Имена `args` и `kwargs` — просто традиция, важны звёздочки.",
+  "why": "Звёздочка в `def` значит «собрать», а при вызове — «разобрать».\n- `*args` собирает **лишние позиционные** аргументы в кортеж.\n- `**kwargs` собирает **лишние именованные** аргументы в словарь.\n\nЭто нужно, чтобы функция могла принимать любое число аргументов или передавать их дальше другой функции (так работают декораторы). Имена `args` и `kwargs` просто традиция."
+ },
+ {
+  "topic_no": 5,
+  "topic": "Функции.",
+  "level": "medium",
+  "question": "Что выведет этот код и почему?",
+  "code": "def func(a, b, c):\n    return a + b + c\n\nparams = {'a': 1, 'b': 2, 'c': 3}\nprint(func(**params))",
+  "answer": "",
+  "id": 66,
+  "claude": "Выведется `6`.\n\n`**params` распаковывает словарь в именованные аргументы: получается `func(a=1, b=2, c=3)`, то есть `1 + 2 + 3`.",
+  "why": "При вызове `**` превращает словарь в именованные аргументы: ключи становятся именами параметров. Значит, `func(**params)` — то же самое, что `func(a=1, b=2, c=3)`, то есть `1 + 2 + 3 = 6`.\n\nКлючи должны быть строками и совпадать с именами параметров."
+ },
+ {
+  "topic_no": 5,
+  "topic": "Функции.",
+  "level": "hard",
+  "question": "Что такое лямбда-функции? В чем их ограничения и когда их стоит использовать?",
+  "code": "",
+  "answer": "",
+  "id": 67,
+  "claude": "**Лямбда** — анонимная (безымянная) функция из одного выражения: `lambda x: x * 2`.\n\nОграничения: только **одно выражение** (нельзя операторы: присваивание, `for`, `if`-блок, `return`), нет аннотаций и docstring, в трейсбеке имя `<lambda>` (сложнее отлаживать), уязвима для «позднего связывания» переменных.\n\nКогда использовать: короткая функция «на месте» — `key=` в `sorted/min/max`, `map/filter`, простые колбэки.\n\n```python\npeople = [(\"Аня\", 20), (\"Боря\", 18)]\nprint(sorted(people, key=lambda p: p[1]))   # [('Боря', 18), ('Аня', 20)]\n```\n\nЕсли логика сложнее — лучше обычная `def`.",
+  "why": "`lambda` — это **выражение** (оно даёт значение), а не оператор. Поэтому внутри неё нельзя присваивать, писать `if`-блоки, циклы и `return`: допускается только одно выражение.\n\nОграничение сделано намеренно: лямбда должна оставаться короткой. Всё сложнее лучше оформить через `def` с понятным именем, так легче читать и отлаживать."
+ },
+ {
+  "topic_no": 5,
+  "topic": "Функции.",
+  "level": "hard",
+  "question": "Поясните каждый принимаемый аргумент в этой функции.",
+  "code": "from typing import Literal\n\n\ndef create_mythical_creature(\n    species: Literal[\"dragon\", \"griffin\", \"phoenix\", \"unicorn\"],\n    name: str,\n    /,\n    *abilities: list[str],\n    rarity: Literal[\"common\", \"rare\", \"epic\", \"legendary\"] = \"common\",\n    habitat: str = \"unknown\",\n    **physical_traits: dict[str, int | str],\n) -> dict[str, object]:\n    return {\n        \"species\": species,\n        \"name\": name,\n        \"abilities\": list(abilities),\n        \"rarity\": rarity,\n        \"habitat\": habitat,\n        \"physical_traits\": physical_traits,\n        \"description\": f\"A {rarity} {species} named {name} with {len(abilities)} abilities\",\n    }",
+  "answer": "",
+  "id": 68,
+  "claude": "Разбор по порядку:\n- `species`, `name` — **только позиционные** (стоят до `/`). `species` может быть одним из четырёх строковых значений (`Literal`).\n- `*abilities` — любое число дополнительных позиционных аргументов (соберутся в кортеж). Вызов: `create_mythical_creature(\"dragon\", \"Smaug\", \"fire\", \"flight\")`.\n- `rarity`, `habitat` — **только именованные** (идут после `*abilities`), у них есть значения по умолчанию (`\"common\"` и `\"unknown\"`).\n- `**physical_traits` — любые другие именованные аргументы (например `height=10, color=\"red\"`) в словаре.\n- `-> dict[str, object]` — функция возвращает словарь.\n\nНюанс: аннотация `*abilities: list[str]` формально означает, что *каждая* способность — список строк; по смыслу правильнее `*abilities: str`.",
+  "why": "Каждый элемент записи в скобках задаёт, **как можно передавать** аргумент:\n- до `/` — только позиционно;\n- `*abilities` забирает остальные позиционные аргументы и закрывает дверь для позиционных, поэтому всё, что после, — **только по имени**;\n- `**physical_traits` забирает остальные именованные.\n\nЗачем так устроено: чтобы нельзя было перепутать порядок `rarity` и `habitat` и чтобы авторы могли позже переименовать `species` и `name`, не сломав чужой код (раз их нельзя было передать по имени)."
+ },
+ {
+  "topic_no": 6,
+  "topic": "Классы.",
+  "level": "simple",
+  "question": "Что такое класс и экземпляр класса?",
+  "code": "",
+  "answer": "",
+  "id": 69,
+  "claude": "**Класс** — чертёж (шаблон), описывающий, какие данные (атрибуты) и действия (методы) будут у объектов. **Экземпляр** — конкретный объект, созданный по этому чертежу.\n\n```python\nclass Dog:\n    pass\n\nrex = Dog()       # rex — экземпляр класса Dog\n```",
+  "why": "Класс — чертёж, а не сам объект. Поэтому по одному чертежу можно сделать много независимых экземпляров: у каждого свои данные, но общее поведение (методы).\n\nСам класс в Python тоже объект (экземпляр типа `type`), поэтому его можно передавать и хранить как любое значение."
+ },
+ {
+  "topic_no": 6,
+  "topic": "Классы.",
+  "level": "simple",
+  "question": "Что такое магический метод?",
+  "code": "",
+  "answer": "",
+  "id": 70,
+  "claude": "**Магический (dunder) метод** — метод со специальным именем в двойных подчёркиваниях (`__init__`, `__str__`, `__len__`, `__add__`, `__eq__`). Мы обычно не вызываем их напрямую: Python сам вызывает их в ответ на синтаксис и встроенные функции. `len(x)` вызывает `x.__len__()`, `a + b` вызывает `a.__add__(b)`, `print(x)` вызывает `x.__str__()`.",
+  "why": "Python заранее не знает, как складывать ваши объекты или как их печатать. Договор простой: если в классе есть метод с особым именем, Python вызывает его в нужный момент (`a + b` → `a.__add__(b)`).\n\nТак операторы и встроенные функции (`len`, `print`, `+`) работают с любыми типами, в том числе вашими. Такой договор называют протоколом."
+ },
+ {
+  "topic_no": 6,
+  "topic": "Классы.",
+  "level": "simple",
+  "question": "Для чего нужен магический метод __init__?",
+  "code": "",
+  "answer": "",
+  "id": 71,
+  "claude": "`__init__` — **инициализатор**: вызывается автоматически сразу после создания экземпляра и задаёт его начальное состояние (атрибуты).\n\n```python\nclass Dog:\n    def __init__(self, name):\n        self.name = name\n\nd = Dog(\"Рекс\")\nprint(d.name)   # Рекс\n```\n\nОн ничего не должен возвращать (только `None`). Сам объект создаёт `__new__`.",
+  "why": "Создание объекта состоит из двух шагов: сначала `__new__` создаёт «пустой» объект, затем `__init__` его **заполняет** (инициализирует).\n\nПоэтому в `__init__` объект уже существует: его передают как `self`, и метод ничего не возвращает (`None`), а только записывает в него начальные данные."
+ },
+ {
+  "topic_no": 6,
+  "topic": "Классы.",
+  "level": "simple",
+  "question": "Что такое self и зачем мы его передаем первым параметром в аргументы методов класса?",
+  "code": "",
+  "answer": "",
+  "id": 72,
+  "claude": "`self` — ссылка на **текущий экземпляр**, у которого вызван метод. Через него метод получает доступ к атрибутам и другим методам этого объекта.\n\nПочему передаётся первым: метод — это обычная функция внутри класса. Запись `d.speak()` Python превращает в `Dog.speak(d)`, автоматически подставляя `d` первым аргументом. Слово `self` — договорённость, но так принято всегда.",
+  "why": "Метод в классе — это **одна общая функция** на все экземпляры. Чтобы она знала, с чьими данными работать, ей первым аргументом передают сам объект.\n\nPython делает это автоматически: `d.speak()` превращается в `Dog.speak(d)`. Поэтому в `def` нужен лишний первый параметр. Имя `self` просто соглашение."
+ },
+ {
+  "topic_no": 6,
+  "topic": "Классы.",
+  "level": "simple",
+  "question": "В чем разница между атрибутами класса и атрибутами экземпляра?",
+  "code": "",
+  "answer": "",
+  "id": 73,
+  "claude": "- **Атрибут класса** — объявлен в теле класса, **общий** для всех экземпляров (хранится в самом классе).\n- **Атрибут экземпляра** — задан через `self.x = ...`, у **каждого объекта свой**.\n\nПоиск атрибута идёт: сначала в экземпляре, потом в классе.\n\n```python\nclass Dog:\n    species = \"собака\"        # общий\n    def __init__(self, name):\n        self.name = name      # у каждого свой\n```",
+  "why": "Поиск атрибута идёт цепочкой: сначала в самом экземпляре, потом в классе (и его родителях). Атрибут класса лежит в **одном** месте, поэтому он общий для всех.\n\nА запись `self.x = ...` всегда создаёт атрибут **у экземпляра**. Поэтому читать можно из класса, а записывать всегда идёт в экземпляр (это важно в примере со счётчиком)."
+ },
+ {
+  "topic_no": 6,
+  "topic": "Классы.",
+  "level": "simple",
+  "question": "Что выведет и почему?",
+  "code": "class A:\n    items = []\n    \n    def add(self, x):\n        self.items.append(x)\n\na1 = A()\na2 = A()\na1.add(1)\na2.add(2)\nprint(a1.items)\nprint(a2.items)",
+  "answer": "",
+  "id": 74,
+  "claude": "Выведется:\n\n```\n[1, 2]\n[1, 2]\n```\n\n`items = []` — атрибут **класса**, один список на всех. `self.items` в методе `add` находит именно его (своего у экземпляра нет), поэтому оба объекта добавляют элементы в один общий список. Исправление: создать список в `__init__`: `self.items = []`.",
+  "why": "Шаги:\n1) `items = []` написан в теле класса: это **один** общий список.\n2) `a1.add(1)`: у `a1` нет собственного `items`, Python берёт из класса — общий список, и `append` меняет его.\n3) `a2.add(2)` меняет тот же самый список.\n4) Оба `print` показывают `[1, 2]`.\n\nЧтобы у каждого экземпляра был свой список, его создают в `__init__`: `self.items = []`."
+ },
+ {
+  "topic_no": 6,
+  "topic": "Классы.",
+  "level": "simple",
+  "question": "Что выведет и почему?",
+  "code": "class Counter:\n    count = 0\n    \n    def __init__(self):\n        self.count += 1\n\nc1 = Counter()\nc2 = Counter()\nprint(c1.count)\nprint(c2.count)\nprint(Counter.count)",
+  "answer": "",
+  "id": 75,
+  "claude": "Выведется:\n\n```\n1\n1\n0\n```\n\n`self.count += 1` читает `count` из класса (0), прибавляет 1 и **записывает результат как новый атрибут экземпляра** (`self.count = 1`). У каждого экземпляра появился свой `count = 1`. Атрибут класса `Counter.count` не менялся и остался 0.",
+  "why": "Шаги:\n1) `self.count += 1` раскладывается на `self.count = self.count + 1`.\n2) Справа Python читает `count`: у экземпляра его нет, берёт из класса: `0`. Получается `0 + 1 = 1`.\n3) Слева происходит **запись**, а запись всегда создаёт атрибут у экземпляра. Теперь у каждого экземпляра свой `count = 1`.\n4) Атрибут класса не менялся: `Counter.count` остался `0`.\n\nЧтобы считать общее число экземпляров, нужно писать `Counter.count += 1`."
+ },
+ {
+  "topic_no": 6,
+  "topic": "Классы.",
+  "level": "medium",
+  "question": "В чем разница между статичным методом и обычным методом класса?",
+  "code": "",
+  "answer": "",
+  "id": 76,
+  "claude": "Три вида методов:\n- **Обычный метод** — первый параметр `self`, работает с конкретным экземпляром.\n- **`@classmethod`** — получает класс `cls`; часто используют для альтернативных конструкторов.\n- **`@staticmethod`** — не получает ни `self`, ни `cls`; это просто функция, «живущая» внутри класса ради удобства группировки.\n\n```python\nclass Circle:\n    pi = 3.14\n    def __init__(self, r): self.r = r\n    def area(self): return self.pi * self.r ** 2           # обычный\n    @classmethod\n    def unit(cls): return cls(1)                            # classmethod\n    @staticmethod\n    def is_valid_radius(r): return r > 0                   # staticmethod\n\nprint(Circle.unit().area())          # 3.14\nprint(Circle.is_valid_radius(-5))    # False\n```",
+  "why": "Разным методам нужны разные «первые параметры», потому что они привязаны к разным объектам:\n- обычный метод работает с **экземпляром** (`self`);\n- `@classmethod` работает с **классом** (`cls`), поэтому подходит для альтернативных конструкторов и корректно работает с наследниками (`cls(...)` создаст нужный подкласс);\n- `@staticmethod` ни с чем не связан: это обычная функция, которую положили в класс «по смыслу»."
+ },
+ {
+  "topic_no": 6,
+  "topic": "Классы.",
+  "level": "medium",
+  "question": "Как реализовать приватные атрибуты в питоне?",
+  "code": "",
+  "answer": "",
+  "id": 77,
+  "claude": "По-настоящему приватных атрибутов в Python нет, есть договорённости:\n- `_name` — «внутренний, не трогай» (только соглашение).\n- `__name` — **name mangling**: Python переименует в `_ИмяКласса__name`, чтобы случайно не перезаписать в наследнике (обойти всё равно можно).\n- Для контролируемого доступа используют `property` (геттеры/сеттеры).\n\n```python\nclass Account:\n    def __init__(self):\n        self.__balance = 0\n\na = Account()\n# a.__balance            # AttributeError\nprint(a._Account__balance)   # 0 — на самом деле имя изменено, а не скрыто\n```",
+  "why": "Философия Python: «мы все взрослые люди». Строгих запретов нет, вместо них соглашения. Одно подчёркивание (`_x`) — «внутреннее, лучше не трогать».\n\nДва подчёркивания (`__x`) нужны не для безопасности, а чтобы наследник случайно не затёр атрибут родителя с тем же именем. Для этого Python переименовывает атрибут в `_Класс__x`. Обойти это легко, как видно из примера."
+ },
+ {
+  "topic_no": 6,
+  "topic": "Классы.",
+  "level": "medium",
+  "question": "Что такое свойства (properties) и для чего они нужны?",
+  "code": "",
+  "answer": "",
+  "id": 78,
+  "claude": "**Property** превращает метод в «атрибут»: снаружи вы пишете `obj.x`, а внутри выполняется функция. Нужны для проверки значений при записи, вычисляемых значений, атрибутов только для чтения, и чтобы позже добавить логику, не меняя интерфейс класса.\n\n```python\nclass Person:\n    def __init__(self, age):\n        self._age = age\n\n    @property\n    def age(self):                  # геттер\n        return self._age\n\n    @age.setter\n    def age(self, value):           # сеттер с проверкой\n        if value < 0:\n            raise ValueError(\"возраст не может быть отрицательным\")\n        self._age = value\n\np = Person(20)\np.age = 21        # вызовется сеттер\nprint(p.age)      # 21\n```",
+  "why": "`property` работает через специальный механизм: когда вы пишете `obj.age`, Python видит, что `age` в классе помечен как `property`, и **вызывает функцию**.\n\nВыгода: снаружи по-прежнему выглядит как обычный атрибут, а внутри можно добавить проверки или вычисления, не ломая код, который уже использует `obj.age`."
+ },
+ {
+  "topic_no": 6,
+  "topic": "Классы.",
+  "level": "medium",
+  "question": "Что выведет этот код и почему?",
+  "code": "class A:\n    def __init__(self):\n        self.setup()\n\n    def setup(self):\n        print(\"A\")\n\n\nclass B(A):\n    def __init__(self):\n        super().__init__()\n\n    def setup(self):\n        print(\"B\")\n\n\nobj = B()",
+  "answer": "",
+  "id": 79,
+  "claude": "Выведется `B`.\n\nХотя `self.setup()` написан в `A.__init__`, `self` — это экземпляр класса `B`, а метод ищется по реальному типу объекта: `B.setup` переопределяет `A.setup`. Это называется **полиморфизм**. (Лишний вызов `__init__` из `B` через `super()` ничего здесь не меняет.)",
+  "why": "Метод ищется **по реальному типу объекта**, а не по тому, в каком классе написан вызов. Шаги:\n1) `B()` вызывает `B.__init__`.\n2) `super().__init__()` запускает `A.__init__`.\n3) В нём `self.setup()`: `self` — это объект класса `B`, поэтому находится `B.setup`.\n4) Печатается `B`.\n\nЭто называется полиморфизмом. Ловушка: вызывать в `__init__` метод, который могут переопределить, опасно, потому что дочерний класс ещё не закончил настройку."
+ },
+ {
+  "topic_no": 6,
+  "topic": "Классы.",
+  "level": "hard",
+  "question": "Что такое абстрактные классы и когда их использовать?",
+  "code": "",
+  "answer": "",
+  "id": 80,
+  "claude": "**Абстрактный класс** — класс, от которого нельзя создать экземпляр напрямую, потому что в нём есть абстрактные методы (объявлены, но не реализованы). Наследники обязаны их реализовать, иначе и они останутся абстрактными.\n\n```python\nfrom abc import ABC, abstractmethod\n\nclass Shape(ABC):\n    @abstractmethod\n    def area(self): ...\n\nclass Square(Shape):\n    def __init__(self, a): self.a = a\n    def area(self): return self.a ** 2\n\n# Shape()          # TypeError: Can't instantiate abstract class\nprint(Square(3).area())   # 9\n```\n\nКогда использовать: когда нужен общий «контракт» для группы классов (например, у всех фигур должен быть `area`), чтобы забытый метод обнаруживался сразу при создании объекта.",
+  "why": "Без абстрактных классов забытый метод обнаруживается только в момент вызова (`AttributeError`), иногда уже в рабочей программе.\n\nС `ABC` проверка происходит **при создании объекта**: если не все абстрактные методы реализованы, объект не создастся (`TypeError`). Так «контракт» (что обязан уметь наследник) проверяется заранее."
+ },
+ {
+  "topic_no": 6,
+  "topic": "Классы.",
+  "level": "hard",
+  "question": "Для чего нужны __slots__ и как они работают?",
+  "code": "",
+  "answer": "",
+  "id": 81,
+  "claude": "`__slots__` — список разрешённых имён атрибутов экземпляра. Вместо словаря `__dict__` на каждый объект Python выделяет компактный массив ячеек фиксированного размера.\n\n```python\nclass Point:\n    __slots__ = (\"x\", \"y\")\n    def __init__(self, x, y):\n        self.x = x\n        self.y = y\n\np = Point(1, 2)\n# p.z = 3     # AttributeError: нельзя добавить новый атрибут\n```\n\nПлюсы: заметно меньше памяти (важно для миллионов мелких объектов) и чуть быстрее доступ. Минусы: нельзя добавлять произвольные атрибуты, нет `__dict__`, с наследованием есть нюансы.",
+  "why": "Обычно у каждого объекта есть свой словарь `__dict__` для атрибутов. Словарь — хеш-таблица, и на каждый экземпляр это лишняя память.\n\n`__slots__` заменяет его компактным массивом ячеек фиксированного размера. Платим гибкостью: список атрибутов задан заранее, добавить новый нельзя. Выгода заметна, когда объектов миллионы."
+ },
+ {
+  "topic_no": 6,
+  "topic": "Классы.",
+  "level": "hard",
+  "question": "Что будет напечатано и почему?",
+  "code": "class Person:\n    def __init__(self, name, age):\n        self.name = name\n        self.age = age\n\n    def __eq__(self, other):\n        return isinstance(other, Person) and self.name == other.name\n\n    def __hash__(self):\n        return hash(self.name)\n\n\np1 = Person(\"Alice\", 25)\np2 = Person(\"Alice\", 30)\nprint(p1 == p2)\nprint(hash(p1) == hash(p2))\n\nd = {p1: \"first\"}\nd[p2] = \"second\"\nprint(len(d))",
+  "answer": "",
+  "id": 82,
+  "claude": "Выведется:\n\n```\nTrue\nTrue\n1\n```\n\n- `p1 == p2` → `True`: `__eq__` сравнивает только `name` (оба \"Alice\").\n- Хеши равны, потому что `__hash__` тоже считается по `name`.\n- В словарь `d[p2]` попал как **тот же ключ** (равны и хеши одинаковые), поэтому значение перезаписалось, а размер остался `1`.\n\nПравило: равные объекты должны иметь равные хеши. Если определить `__eq__`, но не `__hash__`, класс станет нехешируемым.",
+  "why": "Шаги:\n1) `p1 == p2`: вызывается `__eq__`, он сравнивает только `name`: `\"Alice\" == \"Alice\"` → `True`.\n2) `hash(p1) == hash(p2)`: хеш считается тоже от `name`, поэтому одинаковый → `True`.\n3) `d = {p1: \"first\"}`: ключ `p1` лежит в ячейке по хешу.\n4) `d[p2] = \"second\"`: хеш такой же, Python находит ту же ячейку и сравнивает `p2 == p1` → `True`. Это тот же ключ, поэтому значение просто заменяется, и `len(d) == 1`.\n\nПравило: равные объекты обязаны давать равные хеши. Если определить `__eq__` и не определить `__hash__`, Python сделает класс нехешируемым, чтобы избежать ошибок."
+ },
+ {
+  "topic_no": 7,
+  "topic": "Исключения. Контекстные менеджеры.",
+  "level": "simple",
+  "question": "Для чего нужны исключения?",
+  "code": "",
+  "answer": "",
+  "id": 83,
+  "claude": "Исключения — механизм сообщения об ошибках и необычных ситуациях (деление на ноль, файла нет, неверное значение). Они позволяют:\n- не проверять результат после каждой операции — ошибка «всплывает» вверх по цепочке вызовов, пока её кто-то не обработает;\n- отделить основной код от обработки ошибок;\n- не дать программе молча продолжить работу с неверными данными (если не обработать, она аварийно завершится с понятным traceback).",
+  "why": "Альтернатива исключениям — возвращать коды ошибок и проверять их после каждого вызова, как в языке C. Это легко забыть, а код зарастает проверками.\n\nИсключение работает иначе: оно «выпрыгивает» из любого числа вложенных вызовов к первому подходящему обработчику. Ошибку нельзя случайно проигнорировать: если её никто не поймал, программа остановится с понятным сообщением."
+ },
+ {
+  "topic_no": 7,
+  "topic": "Исключения. Контекстные менеджеры.",
+  "level": "simple",
+  "question": "Как отлавливать исключения?",
+  "code": "",
+  "answer": "При помощи конструкции\n\n```python\ntry:\n    ...\nexcept Exception:\n    ...\n```",
+  "id": 84,
+  "claude": "Дополнение: правильнее ловить **конкретный** тип, а не всё подряд, и при необходимости сохранить объект ошибки:\n\n```python\ntry:\n    n = int(input())\nexcept ValueError as err:\n    print(\"Нужно число:\", err)\n```",
+  "why": "Python выполняет `try`. Как только внутри возникает ошибка, он **сразу прыгает** в подходящий `except`, остаток `try` пропускается.\n\n`except Exception` ловит почти все ошибки, но лучше указывать конкретный тип (`ValueError`): так вы обрабатываете только то, что ожидали, а настоящие баги не прячутся."
+ },
+ {
+  "topic_no": 7,
+  "topic": "Исключения. Контекстные менеджеры.",
+  "level": "simple",
+  "question": "Как перехватывать сразу несколько исключений?",
+  "code": "",
+  "answer": "",
+  "id": 85,
+  "claude": "Перечислить типы в **кортеже**:\n\n```python\ntry:\n    ...\nexcept (ValueError, TypeError) as err:\n    print(\"Ошибка значения или типа:\", err)\n```\n\nЛибо написать несколько блоков `except` подряд (разная обработка для разных типов; срабатывает первый подходящий). Для групп исключений есть `except*` (Python 3.11+).",
+  "why": "`except` принимает «класс или кортеж классов», поэтому типы перечисляют в кортеже: подойдёт любой из них.\n\nЕсли блоков `except` несколько, Python идёт **сверху вниз** и берёт первый подходящий. Поэтому узкие типы пишут раньше широких: если поставить `except Exception` первым, до остальных очередь никогда не дойдёт."
+ },
+ {
+  "topic_no": 7,
+  "topic": "Исключения. Контекстные менеджеры.",
+  "level": "simple",
+  "question": "Как работает ключевое слово else в блоке try...except?",
+  "code": "",
+  "answer": "Выполняется если не было проброшено исключений внутри блока try.",
+  "id": 86,
+  "claude": "Дополнение:\n\n```python\ntry:\n    x = int(\"5\")\nexcept ValueError:\n    print(\"плохое число\")\nelse:\n    print(\"всё хорошо, x =\", x)   # выполнится, потому что ошибки не было\n```\n\n`else` полезен, чтобы код «успеха» не попал под защиту `try` и случайно не перехватил чужую ошибку.",
+  "why": "`else` означает «если в `try` **не было** ошибок». Он нужен, чтобы код, который не должен быть под защитой `try`, не стоял внутри него.\n\nИначе `except` мог бы случайно поймать ошибку из этого кода и скрыть настоящую причину."
+ },
+ {
+  "topic_no": 7,
+  "topic": "Исключения. Контекстные менеджеры.",
+  "level": "simple",
+  "question": "Как работает ключевое слово finally в блоке try...except?",
+  "code": "",
+  "answer": "Выполняется в любом случае.",
+  "id": 87,
+  "claude": "Дополнение: `finally` срабатывает при любом исходе: и без ошибки, и при ошибке, и даже если внутри `try` был `return` или `break`. Его используют для освобождения ресурсов (закрыть файл, соединение).\n\n```python\ntry:\n    print(\"работаем\")\nfinally:\n    print(\"уборка\")    # выполнится всегда\n```",
+  "why": "`finally` — гарантия «уборки». Он выполняется всегда: после успешного `try`, после обработанной ошибки и даже если внутри был `return`, `break` или необработанное исключение.\n\nPython запоминает, что собирался сделать (вернуть значение, продолжить падение), сначала выполняет `finally`, а потом продолжает."
+ },
+ {
+  "topic_no": 7,
+  "topic": "Исключения. Контекстные менеджеры.",
+  "level": "simple",
+  "question": "Как создать кастомное исключение?",
+  "code": "",
+  "answer": "Унаследовать класс от `Exception`",
+  "id": 88,
+  "claude": "Дополнение:\n\n```python\nclass NegativeAgeError(Exception):\n    pass\n\ndef set_age(age):\n    if age < 0:\n        raise NegativeAgeError(\"возраст не может быть отрицательным\")\n\ntry:\n    set_age(-1)\nexcept NegativeAgeError as e:\n    print(e)\n```",
+  "why": "Исключения — это классы, а `except` ловит по наследованию: `except Exception` ловит и всех потомков `Exception`. Поэтому свой класс, унаследованный от `Exception`, встраивается в общую систему.\n\nСвой тип нужен, чтобы отличать ошибки вашей программы от чужих и ловить именно их."
+ },
+ {
+  "topic_no": 7,
+  "topic": "Исключения. Контекстные менеджеры.",
+  "level": "simple",
+  "question": "Что такое контекстный менеджер?",
+  "code": "",
+  "answer": "",
+  "id": 89,
+  "claude": "**Контекстный менеджер** — объект, который умеет «подготовиться» при входе в блок `with` и гарантированно «прибраться» при выходе из него (даже при ошибке). Классический пример — файл:\n\n```python\nwith open(\"a.txt\", \"w\") as f:\n    f.write(\"hi\")\n# здесь файл уже закрыт автоматически\n```\n\nПротокол: объект реализует методы `__enter__` и `__exit__`.",
+  "why": "Проблема: ресурс (файл, соединение) нужно закрыть, **даже если случилась ошибка**. С `try/finally` это легко забыть.\n\n`with` решает это сам: на входе вызывает `__enter__`, на выходе (при любом исходе) `__exit__`. Это как дверь с доводчиком: закроется сама."
+ },
+ {
+  "topic_no": 7,
+  "topic": "Исключения. Контекстные менеджеры.",
+  "level": "medium",
+  "question": "Какие минусы перехватывания Exception (имеется ввиду широкий диапазон исключений) вы можете назвать?",
+  "code": "",
+  "answer": "",
+  "id": 90,
+  "claude": "Минусы широкого `except Exception`:\n- прячет **реальные баги** (опечатка в имени, неверный индекс) — программа «молчит» вместо понятной ошибки;\n- ловит то, что вы не ожидали, и реагирует неправильно;\n- затрудняет отладку: непонятно, что именно пошло не так;\n- (голый `except:` ещё хуже: ловит даже `KeyboardInterrupt` и `SystemExit`, Ctrl+C перестанет работать).\n\nЛучше ловить конкретные исключения, а если широкий перехват нужен — хотя бы логировать ошибку.",
+  "why": "Любая ошибка в вашем коде (даже опечатка в имени) тоже является `Exception`. Широкий `except` её поймает и скроет, и программа будет «молча работать неправильно».\n\nК тому же по типу пойманной ошибки нельзя понять, что именно случилось, а значит нельзя и правильно среагировать."
+ },
+ {
+  "topic_no": 7,
+  "topic": "Исключения. Контекстные менеджеры.",
+  "level": "medium",
+  "question": "Зачем нам сохранять исключение в отдельную переменную?",
+  "code": "try:\n    ...\nexcept Exception as err:\n    ...",
+  "answer": "",
+  "id": 91,
+  "claude": "Чтобы получить доступ к самому объекту ошибки: вывести сообщение (`str(err)`), посмотреть аргументы (`err.args`), traceback, записать в лог, или пробросить дальше как причину: `raise MyError(\"...\") from err`. Без `as err` объекта у вас нет. Переменная живёт только внутри блока `except` и потом удаляется.",
+  "why": "Исключение — это объект, в нём лежат сообщение, аргументы и информация о том, где ошибка произошла. Без имени (`as err`) у вас нет доступа к этому объекту.\n\nПосле блока `except` имя удаляется. Это сделано нарочно: иначе объект ошибки держал бы ссылки на кадры стека, а это лишняя память и риск циклических ссылок."
+ },
+ {
+  "topic_no": 7,
+  "topic": "Исключения. Контекстные менеджеры.",
+  "level": "medium",
+  "question": "Какие ключевые слова можно использовать в конструкции ловли исключений?",
+  "code": "",
+  "answer": "- `else` - расскажите как работает\n- `finally` - расскажите как работает",
+  "id": 92,
+  "claude": "Дополнение — полный порядок:\n\n```python\ntry:\n    x = int(\"5\")\nexcept ValueError:\n    print(\"ошибка\")       # только если было исключение\nelse:\n    print(\"успех\")        # только если исключения НЕ было\nfinally:\n    print(\"всегда\")       # в любом случае\n```\n\nВывод: `успех`, затем `всегда`.",
+  "why": "Порядок всегда одинаковый, и он отражает логику: основная работа (`try`), реакция на ошибку (`except`), «всё прошло хорошо» (`else`), уборка в любом случае (`finally`).\n\nВ примере ошибки нет, поэтому печатается `успех` (`else`), а затем `всегда` (`finally`). Блок `except` пропускается."
+ },
+ {
+  "topic_no": 7,
+  "topic": "Исключения. Контекстные менеджеры.",
+  "level": "medium",
+  "question": "Как работает этот блок кода?",
+  "code": "try:\n    try:\n        1 / 0\n    except ZeroDivisionError as e:\n        print(\"Логируем ошибку и пробрасываем дальше\")\n        raise ValueError(\"a\") from e\nexcept ValueError as err:\n    print(\"c\")\n    raise ValueError(\"b\") from err",
+  "answer": "",
+  "id": 93,
+  "claude": "Вывод:\n\n```\nЛогируем ошибку и пробрасываем дальше\nc\n```\n\nи затем программа падает с необработанным `ValueError: b`.\n\nПо шагам:\n1. `1 / 0` → `ZeroDivisionError`, его ловит внутренний `except`, печатается первая строка, и бросается `ValueError(\"a\")`; `from e` запоминает, что причина — `ZeroDivisionError`.\n2. `ValueError(\"a\")` ловит внешний `except ValueError`, печатает `c`, и бросает новый `ValueError(\"b\")` `from err`.\n3. Его уже никто не ловит, программа завершается с traceback, в котором видна вся цепочка: `ZeroDivisionError` → `ValueError: a` → `ValueError: b` (`raise ... from ...` задаёт причину, `__cause__`).",
+  "why": "Шаги:\n1) `1 / 0` бросает `ZeroDivisionError`. Его ловит внутренний `except`, печатается «Логируем ошибку...».\n2) Внутри него `raise ValueError(\"a\") from e`: бросается **новое** исключение, а `from e` записывает, что его причина — `e`.\n3) `ValueError(\"a\")` ловит внешний `except ValueError`, печатается `c`.\n4) `raise ValueError(\"b\") from err` бросает ещё одно исключение. Больше `except` нет, программа падает.\n\nВ итоговом сообщении видна вся цепочка причин, и это помогает искать исходную ошибку."
+ },
+ {
+  "topic_no": 7,
+  "topic": "Исключения. Контекстные менеджеры.",
+  "level": "medium",
+  "question": "Для чего нужен контекстный менеджер?",
+  "code": "",
+  "answer": "",
+  "id": 94,
+  "claude": "Контекстный менеджер нужен, чтобы **гарантированно освобождать ресурсы** (файл, соединение с БД, блокировку, транзакцию), даже если внутри блока случилась ошибка, и при этом не писать длинный `try/finally` каждый раз. Код получается короче, надёжнее и читаемее.",
+  "why": "Контекстный менеджер собирает «открыть» и «закрыть» в одном месте. Вы не забудете закрыть ресурс и не будете копировать один и тот же `try/finally` по всей программе.\n\nКод получается короче, понятнее и надёжнее."
+ },
+ {
+  "topic_no": 7,
+  "topic": "Исключения. Контекстные менеджеры.",
+  "level": "medium",
+  "question": "Какая сигнатура у магических методов, необходимых для реализации протокола контекстного менеджера?",
+  "code": "",
+  "answer": "",
+  "id": 95,
+  "claude": "Два метода:\n\n```python\ndef __enter__(self):\n    # вызывается при входе в with; то, что вернёт, попадёт в \"as\"\n    return self\n\ndef __exit__(self, exc_type, exc_val, exc_tb):\n    # вызывается при выходе; если ошибки не было, все три аргумента None\n    # вернуть True — подавить исключение; False/None — пропустить дальше\n    return False\n```",
+  "why": "`__exit__` вызывается всегда, поэтому ему передают информацию о том, что произошло: тип ошибки, её значение и traceback. Если ошибки не было, все три равны `None`.\n\nТо, что вернёт `__exit__`, важно: `True` означает «я ошибку обработал, подавь её». Поэтому возвращать `True` надо очень осторожно."
+ },
+ {
+  "topic_no": 7,
+  "topic": "Исключения. Контекстные менеджеры.",
+  "level": "hard",
+  "question": "В чем опасность этого контекстного менеджера? Что будет напечатано?",
+  "code": "class DatabaseConnection:\n    def __enter__(self):\n        print(\"Connecting to database...\")\n        return self\n\n    def __exit__(self, exc_type, exc_val, exc_tb):\n        if exc_type is not None:\n            print(f\"Error: {exc_val}\")\n        print(\"Disconnecting from database...\")\n        return True\n\n\nwith DatabaseConnection():\n    raise ValueError(\"Critical error!\")\nprint(\"Program continues...\")",
+  "answer": "",
+  "id": 96,
+  "claude": "Вывод:\n\n```\nConnecting to database...\nError: Critical error!\nDisconnecting from database...\nProgram continues...\n```\n\nОпасность: `__exit__` возвращает `True`, а это значит «исключение обработано, подавить». Программа молча проглатывает критическую ошибку и продолжает работу, как будто ничего не случилось (например, данные не записались, а код думает, что всё хорошо). Нужно возвращать `None`/`False`, чтобы исключение пошло дальше, либо подавлять только заведомо безопасные типы ошибок.",
+  "why": "Шаги:\n1) `with` вызывает `__enter__`: печатается `Connecting to database...`.\n2) Внутри блока бросается `ValueError`.\n3) Python вызывает `__exit__` с информацией об ошибке: печатается `Error: Critical error!`, потом `Disconnecting from database...`.\n4) `__exit__` вернул `True`, значит «ошибка обработана». Python **не пробрасывает её дальше**, и выполняется `print(\"Program continues...\")`.\n\nОпасность: критическая ошибка тихо проглочена, и вы можете даже не узнать, что что-то сломалось."
+ },
+ {
+  "topic_no": 7,
+  "topic": "Исключения. Контекстные менеджеры.",
+  "level": "hard",
+  "question": "Что делает и как работает этот код?",
+  "code": "from contextlib import contextmanager\n\n\n@contextmanager\ndef magic_contextmanager() -> tp.Iterator[int]:\n    print(\"before\")\n    try:\n        yield 42\n    except Exception as e:\n        print(f\"{e=}\")\n    finally:\n        print(\"after\")",
+  "answer": "",
+  "id": 97,
+  "claude": "`@contextmanager` превращает функцию-генератор в контекстный менеджер:\n- код **до** `yield` — это `__enter__` («before»);\n- значение после `yield` (`42`) попадает в `as`;\n- код **после** `yield` — это `__exit__`.\n\nЕсли внутри `with` возникло исключение, оно «пробрасывается» в генератор в точку `yield`, поэтому его ловит `except Exception`. Блок `finally` выполняется всегда. Так как `except` не пробрасывает исключение дальше, оно оказывается **подавленным**.\n\n```python\nwith magic_contextmanager() as v:\n    print(v)\n# before / 42 / after\n\nwith magic_contextmanager() as v:\n    raise RuntimeError(\"boom\")\n# before / e=RuntimeError('boom') / after   (программа продолжается)\n```\n\nМелочь: в примере используется `tp`, поэтому нужен `import typing as tp`.",
+  "why": "Генератор с `yield` умеет «замораживаться» на этом месте и продолжаться позже. `@contextmanager` использует это:\n1) Код до `yield` выполняется на входе в `with`, а значение `yield` (42) уходит в `as`.\n2) Тело `with` выполняется, пока генератор «заморожен».\n3) На выходе генератор «размораживается» и выполняет код после `yield`.\n\nЕсли в `with` возникла ошибка, её **бросают в генератор в точку `yield`**. Поэтому `try/except` вокруг `yield` может её поймать, а `finally` выполнится в любом случае."
+ },
+ {
+  "topic_no": 8,
+  "topic": "Протоколы и интерфейсы.",
+  "level": "simple",
+  "question": "Что такое протокол в Python? Приведите пример.",
+  "code": "",
+  "answer": "Неформальный интерфейс с некоторым набором методов.\nИнтерфейс - некоторый абстрактный набор методов.",
+  "id": 98,
+  "claude": "Дополнение с примером: класс считается «итерируемым», если у него есть `__iter__`; «имеющим длину» — если есть `__len__`. Тип проверять не нужно, достаточно наличия методов.\n\n```python\nclass Bag:\n    def __len__(self): return 3\n\nprint(len(Bag()))   # 3 — работает, потому что есть __len__\n```\n\nФормально протокол можно описать через `typing.Protocol` (подробнее в соответствующем вопросе).",
+  "why": "В динамическом языке важнее, **что объект умеет**, чем к какому классу он принадлежит. Протокол описывает такую «роль»: набор методов, достаточный для работы.\n\nНапример, `len(x)` не проверяет тип, а просто вызывает `x.__len__()`. Всё, у чего он есть, подходит."
+ },
+ {
+  "topic_no": 8,
+  "topic": "Протоколы и интерфейсы.",
+  "level": "simple",
+  "question": "Что такое \"Утиная типизация\" (Duck Typing)? Объясните на примере.",
+  "code": "",
+  "answer": "Если у объекта есть какой-то метод A, то это объект удовлетворяющий протокол с методом A.",
+  "id": 99,
+  "claude": "Дополнение с примером: «Если что-то ходит как утка и крякает как утка — значит, это утка». Нас не интересует тип, только наличие нужных методов.\n\n```python\nclass Duck:\n    def quack(self): print(\"Кря\")\nclass Robot:\n    def quack(self): print(\"Бип-кря\")\n\ndef make_noise(x):\n    x.quack()          # не проверяем тип, просто вызываем\n\nmake_noise(Duck())\nmake_noise(Robot())   # тоже работает\n```",
+  "why": "Python не проверяет тип заранее: вы просто вызываете метод. Если метода нет, получите `AttributeError`, но только в момент вызова.\n\nПлюс: гибкость, можно подставить любой подходящий объект (например, заглушку в тестах). Минус: ошибки обнаруживаются поздно."
+ },
+ {
+  "topic_no": 8,
+  "topic": "Протоколы и интерфейсы.",
+  "level": "simple",
+  "question": "Что такое \"Гусиная типизация\" (Goose Typing) и чем она отличается от утиной?",
+  "code": "",
+  "answer": "Если мы наследуем интерфейс А, то мы его реализовываем.",
+  "id": 100,
+  "claude": "Дополнение: в гусиной типизации тип проверяется **заранее** через `isinstance` по абстрактному базовому классу (ABC). Класс либо явно наследуется от ABC/регистрируется в нём, либо ABC сам умеет распознавать подходящие классы.\n\n```python\nfrom collections.abc import Sized\nprint(isinstance([1, 2], Sized))   # True\nprint(isinstance(5, Sized))         # False\n```\n\nУтиная — «пробуем вызвать и смотрим, что получится»; гусиная — «сначала проверяем контракт».",
+  "why": "У утиной типизации есть недостаток: непонятно заранее, подходит ли объект. Гусиная типизация добавляет явный контракт: абстрактный класс (ABC) описывает, что нужно уметь, а `isinstance` проверяет это заранее.\n\nЭто компромисс между гибкостью и надёжностью."
+ },
+ {
+  "topic_no": 8,
+  "topic": "Протоколы и интерфейсы.",
+  "level": "medium",
+  "question": "Какие встроенные протоколы вы знаете? Приведите примеры.",
+  "code": "",
+  "answer": "Hashable, MutableSequence, Mapping",
+  "id": 101,
+  "claude": "Дополнение — модуль `collections.abc`: `Iterable`, `Iterator`, `Sized` (есть `__len__`), `Container` (есть `__contains__`), `Hashable`, `Callable`, `Sequence`, `MutableSequence`, `Mapping`, `MutableMapping`, `Set`. Пример: `isinstance({}, Mapping)` → `True`.",
+  "why": "Модуль `collections.abc` содержит абстрактные классы-«роли» для стандартных типов. Они выстроены в иерархию: чем выше, тем меньше требований (`Sized` требует только `__len__`, `Sequence` уже и индексы, и итерацию).\n\nБлагодаря этому можно проверять не «это список?», а «умеет ли это вести себя как последовательность?»."
+ },
+ {
+  "topic_no": 8,
+  "topic": "Протоколы и интерфейсы.",
+  "level": "medium",
+  "question": "Как абстрактные базовые классы (ABC) помогают в гусиной типизации?",
+  "code": "",
+  "answer": "isinstance",
+  "id": 102,
+  "claude": "Дополнение: ABC позволяют проверять «умеет ли объект нужное поведение» через `isinstance`, не заставляя наследоваться. Например, `isinstance(obj, Iterable)` вернёт `True`, если у класса есть `__iter__`, даже когда он ни от чего не наследовался. Также можно проверять свои классы и регистрировать чужие: `MyABC.register(SomeClass)`.",
+  "why": "ABC умеют признавать класс «своим» даже без наследования: через специальный метод они смотрят, есть ли у класса нужные методы. Поэтому `isinstance(x, Iterable)` проверяет **умения**, а не родословную.\n\nТак вы получаете проверку заранее и не заставляете чужие классы наследоваться от вашего."
+ },
+ {
+  "topic_no": 8,
+  "topic": "Протоколы и интерфейсы.",
+  "level": "medium",
+  "question": "В чем разница между isinstance() проверкой с ABC и утиной типизацией?",
+  "code": "",
+  "answer": "В гусиной проверяем предварительно\nВ утиной в бою проверяем",
+  "id": 103,
+  "claude": "Дополнение:\n- **Утиная**: ничего не проверяем заранее, просто вызываем метод; если его нет, получаем `AttributeError` во время работы («в бою»).\n- **Гусиная**: `isinstance(x, SomeABC)` проверяет контракт заранее, ошибку можно поймать до начала работы.\n\nУтиная проще и гибче, гусиная надёжнее и явнее.",
+  "why": "Это два подхода по времени проверки. Утиная: «**попробуй и поймай ошибку**» (EAFP, «проще попросить прощения, чем разрешения»). Гусиная: «**сначала проверь**» (LBYL, «look before you leap»).\n\nОт времени проверки зависит, когда обнаружится ошибка: в процессе работы или заранее."
+ },
+ {
+  "topic_no": 8,
+  "topic": "Протоколы и интерфейсы.",
+  "level": "hard",
+  "question": "Как создать собственный протокол с помощью typing.Protocol?",
+  "code": "",
+  "answer": "1. Наследоваться от typing.Protocol\n2. Определить методы и их сигнатуру\n3. Использовать в типизации\n4. В конце концов запустить проверку статичной типизации",
+  "id": 104,
+  "claude": "Дополнение с кодом:\n\n```python\nfrom typing import Protocol\n\nclass SupportsClose(Protocol):\n    def close(self) -> None: ...\n\ndef shutdown(resource: SupportsClose) -> None:\n    resource.close()\n\nclass File:\n    def close(self) -> None:\n        print(\"закрыто\")\n\nshutdown(File())   # подходит, хотя File не наследуется от SupportsClose\n```\n\nПроверку выполняет статический анализатор (например, `mypy`), во время работы программы типы не проверяются. Это «статическая утиная типизация».",
+  "why": "`Protocol` рассчитан на **статические проверки** (инструменты вроде `mypy`, которые читают код, не запуская его). Они смотрят на структуру класса: есть ли нужные методы, а не на то, от чего он наследуется.\n\nПолучается «утиная типизация, проверенная до запуска». Во время работы программы эти аннотации Python сам не проверяет."
+ },
+ {
+  "topic_no": 8,
+  "topic": "Протоколы и интерфейсы.",
+  "level": "hard",
+  "question": "Прокомментируйте этот код. Что мы можем делать с классом Deck? Это утиная или гусиная типизация?",
+  "code": "from collections import abc, namedtuple\nfrom typing import Self\n\nCard = namedtuple(\"Card\", [\"rank\", \"suit\"])\n\n\nclass Deck(abc.MutableSequence):\n    ranks = [str(n) for n in range(2, 11)] + list(\"JQKA\")\n    suits = \"spades diamonds clubs hearts\".split()\n\n    def __init__(self) -> Self:\n        self._cards = [Card(rank, suit) for suit in self.suits for rank in self.ranks]\n\n    def __len__(self) -> int:\n        return len(self._cards)\n\n    def __getitem__(self, position: int) -> Card:\n        return self._cards[position]\n\n    def __setitem__(self, position: int, value: Card) -> None:\n        self._cards[position] = value\n\n    def __delitem__(self, position: int) -> None:\n        del self._cards[position]\n\n    def insert(\n        self, position: int, value: Card\n    ):\n        self._cards.insert(position, value)",
+  "answer": "",
+  "id": 105,
+  "claude": "Это **гусиная типизация**: `Deck` явно наследуется от ABC `collections.abc.MutableSequence`.\n\nНужно реализовать пять абстрактных методов (`__getitem__`, `__setitem__`, `__delitem__`, `__len__`, `insert`), а взамен «бесплатно» получаем остальные: `append`, `extend`, `pop`, `remove`, `reverse`, `index`, `count`, `__iter__`, `__contains__`, `__reversed__`, `+=`.\n\nЧто можно делать: `len(deck)`, `deck[0]`, `for card in deck`, `card in deck`, `deck.append(card)`, `deck.pop()`, `random.shuffle(deck)`, `del deck[0]`.\n\nЗамечания по коду: аннотация `__init__(...) -> Self` неверна (должно быть `-> None`); срез `deck[1:3]` вернёт обычный список, а не `Deck`. Если бы класс просто имел эти методы без наследования от ABC, это была бы утиная типизация.",
+  "why": "`MutableSequence` — шаблон: из пяти базовых операций (`__getitem__`, `__setitem__`, `__delitem__`, `__len__`, `insert`) он сам выводит остальное. Например, `append(x)` — это `insert(len(self), x)`.\n\nПоэтому мы пишем минимум, а получаем весь привычный интерфейс списка. Это гусиная типизация, потому что есть явное наследование от ABC."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "simple",
+  "question": "Как можно итерироваться по объекту?",
+  "code": "",
+  "answer": "При помощи циклов и встроенной функции `next()`.\nСоздать `__iter__` и применять к нему `__next__`.",
+  "id": 106,
+  "claude": "Дополнение с примером:\n\n```python\nfor x in [1, 2, 3]:   # цикл for\n    print(x)\n\nit = iter([1, 2])     # вручную через iter/next\nprint(next(it))       # 1\nprint(next(it))       # 2\n```",
+  "why": "Цикл `for` на деле делает две вещи: вызывает `iter(obj)`, чтобы получить итератор, и затем многократно вызывает `next()` у него.\n\nПоэтому есть два уровня: **итерируемый объект** (умеет создать итератор) и **итератор** (умеет выдавать значения по одному)."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "simple",
+  "question": "По каким объектам можно итерироваться?",
+  "code": "",
+  "answer": "По итерируемым объектам (iterable).",
+  "id": 107,
+  "claude": "",
+  "why": "Контракт простой: если `iter(obj)` работает, по объекту можно итерироваться. Если нет, будет `TypeError: object is not iterable`."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "simple",
+  "question": "Какой объект является итерируемым?",
+  "code": "",
+  "answer": "Объект, у которого реализован магический метод `__iter__()`.",
+  "id": 108,
+  "claude": "",
+  "why": "`__iter__` — это «фабрика итераторов». Благодаря ей по списку можно ходить много раз: каждый новый обход начинается с нового итератора."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "simple",
+  "question": "Что такое итератор?",
+  "code": "",
+  "answer": "Объект, у которого реализованы магические методы `__iter__()` и `__next__()`.",
+  "id": 109,
+  "claude": "",
+  "why": "Итератор **хранит текущую позицию** (состояние). Каждый `next()` сдвигает её на шаг и отдаёт значение.\n\n`__iter__` нужен, чтобы итератор можно было использовать в `for`: он просто возвращает сам итератор."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "simple",
+  "question": "Является ли итератор итерируемым объектом?",
+  "code": "",
+  "answer": "Да, является.",
+  "id": 110,
+  "claude": "",
+  "why": "Да, потому что у итератора есть `__iter__` (он возвращает сам себя). Это нужно, чтобы любой итератор можно было подставить в `for`, как и обычную коллекцию."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "simple",
+  "question": "Является ли итерируемый объект итератором?",
+  "code": "",
+  "answer": "Нет, не является.",
+  "id": 111,
+  "claude": "",
+  "why": "Если бы список был итератором, у него была бы **одна** текущая позиция. После первого обхода она оказалась бы в конце, и повторно пройтись по списку было бы нельзя.\n\nРазделение «итерируемый» и «итератор» позволяет делать много независимых обходов одного списка."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "simple",
+  "question": "Что делает магический метод __next__?",
+  "code": "",
+  "answer": "Выдаёт следующий элемент итерируемого объекта.",
+  "id": 112,
+  "claude": "",
+  "why": "Контракт такой: выдавай следующий элемент, а когда они кончились, бросай `StopIteration`.\n\nИсключение выбрано вместо специального значения, потому что любое значение (даже `None`) может быть настоящим элементом последовательности."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "simple",
+  "question": "Что такое генераторная функция?",
+  "code": "",
+  "answer": "Функция, внутри которой если ключевое слово `yield`",
+  "id": 113,
+  "claude": "Дополнение с примером: при вызове такая функция не выполняется сразу, а возвращает объект-генератор.\n\n```python\ndef count_to(n):\n    for i in range(1, n + 1):\n        yield i\n\nprint(list(count_to(3)))   # [1, 2, 3]\n```",
+  "why": "Появление `yield` меняет поведение функции. Её вызов **не выполняет тело**, а возвращает объект-генератор. Тело выполняется кусками при каждом `next()`: до ближайшего `yield`, потом пауза.\n\nPython сам строит нужные `__iter__` и `__next__`, поэтому вместо целого класса достаточно нескольких строк."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "medium",
+  "question": "Что делает магический метод __iter__?",
+  "code": "",
+  "answer": "Возвращает объект-итератор: либо `self`, либо отдельный класс, который позволяет итерироваться по исходному объекту.",
+  "id": 114,
+  "claude": "",
+  "why": "Что вернуть из `__iter__`, зависит от задачи. Вернуть `self` значит «я сам итератор». Вернуть отдельный объект-итератор значит «по мне можно ходить много раз независимо»."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "medium",
+  "question": "Зачем нужны итераторы?",
+  "code": "",
+  "answer": "- **Стандартизация доступа**: Обеспечивают удобный механизм последовательного доступа к элементам коллекций без управления индексами\n- **Эффективность памяти**: Позволяют работать с большими или бесконечными последовательностями без загрузки всех данных в память\n- **Удобство использования**: Интеграция с конструкциями высокого уровня (цикл `for`)",
+  "id": 115,
+  "claude": "",
+  "why": "Итераторы позволяют **не хранить всё сразу**, а выдавать значения по запросу. Так можно обойти файл в 100 ГБ или бесконечную последовательность.\n\nПлюс единый интерфейс: `for` работает с любым источником, и ему всё равно, откуда берутся значения."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "medium",
+  "question": "Какое исключение выбрасывается при исчерпании итератора?",
+  "code": "",
+  "answer": "`StopIteration`",
+  "id": 116,
+  "claude": "",
+  "why": "`StopIteration` — штатный сигнал «элементов больше нет». Цикл `for` сам его ловит и тихо завершается.\n\nИсключением это сделано, чтобы любое значение, в том числе `None`, могло быть обычным элементом."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "medium",
+  "question": "Как проверить объект на итерируемость?",
+  "code": "",
+  "answer": "Попробовать применить встроенную функцию `iter()` к объекту",
+  "id": 117,
+  "claude": "",
+  "why": "`iter(obj)` бросает `TypeError`, если по объекту нельзя итерироваться. Это самая надёжная проверка.\n\nПроверка `isinstance(obj, Iterable)` не замечает старый способ (через `__getitem__`), поэтому иногда ошибается."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "medium",
+  "question": "Является ли объект с реализованным магическим методом __getitem__ итерируемым?",
+  "code": "",
+  "answer": "Да",
+  "id": 118,
+  "claude": "Дополнение: `iter()` умеет работать со «старым протоколом»: если у объекта нет `__iter__`, но есть `__getitem__`, Python вызывает его с индексами 0, 1, 2... пока не получит `IndexError`. Поэтому `for x in obj` работает. Но `isinstance(obj, Iterable)` в этом случае вернёт `False`.",
+  "why": "Это исторический способ: когда в языке ещё не было `__iter__`, по объекту ходили, вызывая `__getitem__` с индексами 0, 1, 2, ..., пока не получат `IndexError`.\n\nДля совместимости `iter()` и `for` до сих пор так умеют. А `isinstance(obj, Iterable)` про этот способ не знает."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "medium",
+  "question": "Как обратиться к итерируемому объекту по индексу?",
+  "code": "",
+  "answer": "По дефолту никак, если очень хочется, то реализовываем `__getitem__`",
+  "id": 119,
+  "claude": "",
+  "why": "Итерируемость и индексация — разные вещи. Индексация нужна для **произвольного доступа** к элементу, а итерация только для последовательного обхода.\n\nУ итератора и генератора элементы могут вообще не храниться (они считаются на лету), поэтому индексов у них нет."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "medium",
+  "question": "Как пройтись по итератору заново?",
+  "code": "",
+  "answer": "Никак. Нужно создавать новый итератор",
+  "id": 120,
+  "claude": "",
+  "why": "Итератор только «помнит, где остановился» и не умеет отматывать назад: он ничего не хранит.\n\nЧтобы пройтись снова, нужно снова взять итерируемый объект и вызвать `iter()`. Для генератора нужно заново вызвать генераторную функцию."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "medium",
+  "question": "Что делает данный блок кода?",
+  "code": "for _ in iter(input, \"exit\"):\n    ...",
+  "answer": "Это способ реализовать бесконечный ввод пока не получим \"exit\" на вход",
+  "id": 121,
+  "claude": "",
+  "why": "У `iter` есть вторая форма: `iter(функция, стоп_значение)`. Она вызывает функцию снова и снова, пока результат не станет равен стоп-значению, и тогда останавливается.\n\nЗдесь функция — `input`, стоп-значение — `\"exit\"`. Поэтому цикл читает строки, пока вы не введёте `exit`."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "medium",
+  "question": "Что такое генератор?",
+  "code": "",
+  "answer": "Это особый вид итератора, позволяющий итерироваться по последовательности данных без хранения полной последовательности в памяти. Генераторы генерируют объекты налету, что и делает их хорошим выбором для больших объёмов данных.",
+  "id": 122,
+  "claude": "",
+  "why": "Генератор «помнит», на каком месте остановился (в точке `yield`) вместе со всеми локальными переменными. Поэтому каждое значение вычисляется **по требованию**, а в памяти лежит только текущий шаг.\n\nОтсюда экономия памяти и возможность работать с бесконечными последовательностями."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "medium",
+  "question": "В каких случаях применять генератор, а в каких просто итератор?",
+  "code": "",
+  "answer": "",
+  "id": 123,
+  "claude": "Генератор лучше, когда нужна **ленивая последовательность** с простой логикой: код короче (`yield` вместо целого класса с `__iter__` и `__next__`), мало памяти, удобны конвейеры.\n\nКласс-итератор лучше, когда нужно сложное состояние, дополнительные методы и свойства, возможность сбросить/продолжить обход или многократно создавать независимые итераторы.\n\nГенератор — это тоже итератор, просто записанный проще.\n\n```python\ndef squares(n):\n    for i in range(n):\n        yield i * i\n\nprint(list(squares(4)))   # [0, 1, 4, 9]\n```",
+  "why": "Генератор — это итератор, для которого Python сам хранит состояние: оно лежит в кадре приостановленной функции. Поэтому для простых случаев генератор удобнее: не нужно писать класс и самому следить за позицией.\n\nКласс-итератор выбирают, когда нужно сложное состояние, дополнительные методы или возможность создавать независимые обходы."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "medium",
+  "question": "На какие подвиды делятся генераторы?",
+  "code": "",
+  "answer": "Генераторная функция, генератор и генераторное выражение",
+  "id": 124,
+  "claude": "",
+  "why": "Это один механизм в трёх формах: генераторная функция (шаблон с `yield`), генератор (объект, который получается при её вызове) и генераторное выражение (короткая запись `(x for x in ...)`)."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "medium",
+  "question": "Что делает функция repeat?",
+  "code": "def repeat(iterable: tp.Iterable[int], times: int | None = None):\n    for _ in range(times) if times is not None else iter(int, 1):\n        yield from iterable",
+  "answer": "",
+  "id": 125,
+  "claude": "`repeat` — генератор, который повторяет все элементы `iterable` `times` раз; если `times=None`, повторяет бесконечно.\n\nКак это работает:\n- `range(times)` при заданном `times`, а `iter(int, 1)` — «хитрый» бесконечный итератор: `int()` всегда возвращает `0`, а стоп-значение `1`, так что условие никогда не наступает;\n- `yield from iterable` на каждом повторе выдаёт все элементы по очереди.\n\n```python\nprint(list(repeat([1, 2], 3)))   # [1, 2, 1, 2, 1, 2]\n```\n\nВажно: `iterable` должен быть многоразовым (список подойдёт, а итератор исчерпается после первого круга).",
+  "why": "Шаги:\n1) Если `times` задан, цикл идёт по `range(times)`, то есть повторяется нужное число раз.\n2) Если `times` равен `None`, берётся `iter(int, 1)`. Это «хитрый» бесконечный итератор: `int()` всегда возвращает `0`, а останов был бы на `1`, значит он никогда не наступит.\n3) На каждом повторе `yield from iterable` выдаёт все элементы по очереди.\n\nНюанс: `iterable` должен допускать повторный обход (например, список). Если передать итератор, на втором круге он окажется пустым."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "medium",
+  "question": "Какое исключение пробрасывается в генератор когда мы его закрываем?",
+  "code": "",
+  "answer": "`GeneratorExit`",
+  "id": 126,
+  "claude": "",
+  "why": "`close()` «вбрасывает» в точку `yield` исключение `GeneratorExit`, чтобы генератор мог сделать уборку (`finally`, закрыть файлы).\n\n`GeneratorExit` унаследован от `BaseException`, а не от `Exception`, чтобы обычный `except Exception` не мог его случайно проглотить и помешать закрытию."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "hard",
+  "question": "Какие методы у генераторов вы знаете? Расскажите подробно про каждый из них",
+  "code": "",
+  "answer": "`send` - отправка сообщения в генератор: таким образом можно использовать генераторную функцию как канал коммуникации\n\n`close` - соответственно закрыть этот канал коммуникации, чтобы на другом конце поняли, что больше не нужно в него писать/читать\n\n`throw` - пробросить исключение в канал коммуникации: например, А передал плохие аргументы в генераторную фукнцию, B их прочитал и в ответ пробросил исключение",
+  "id": 127,
+  "claude": "",
+  "why": "Генератор — это **двусторонний канал**: `next` забирает значение изнутри наружу, `send` отправляет значение внутрь, `throw` отправляет ошибку, `close` завершает работу.\n\nНа этом построены корутины: функции, которые умеют приостанавливаться и обмениваться данными."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "hard",
+  "question": "Что делает функция accumulator?",
+  "code": "def accumulator() -> tp.Generator[int, int, None]:\n    total = 0\n    while True:\n        try:\n            value = yield total\n        except GeneratorExit:\n            print(f\"Generator is close, {total=}\")\n            raise\n\n        if value is None:\n            break\n        total += value",
+  "answer": "",
+  "id": 128,
+  "claude": "`accumulator` — генератор-«сумматор». Он хранит `total` и каждый раз отдаёт текущую сумму. Через `send(x)` мы передаём число, оно прибавляется к `total`.\n\n```python\ng = accumulator()\nprint(next(g))     # 0   — запуск, отдал total=0\nprint(g.send(5))   # 5\nprint(g.send(10))  # 15\ng.close()          # печатает: Generator is close, total=15\n```\n\nДетали:\n- `value = yield total` — одновременно отдаёт `total` наружу и получает значение из `send`;\n- при `close()` в генератор приходит `GeneratorExit`, мы печатаем итог и пробрасываем его дальше (`raise`);\n- если пришло `None` (например `next(g)` вместо `send` или `send(None)`), цикл прерывается через `break` и генератор завершается (`StopIteration`).",
+  "why": "Шаги:\n1) `next(g)` запускает генератор до первого `yield`, он отдаёт `0`.\n2) `g.send(5)`: значение 5 становится результатом `yield`, попадает в `value`, `total` становится 5, цикл доходит до следующего `yield` и отдаёт `5`.\n3) `g.send(10)`: аналогично, итог `15`.\n4) `g.close()`: внутрь приходит `GeneratorExit`, печатается итог, и мы пробрасываем его дальше через `raise`, чтобы генератор закрылся.\n\nНюанс: первым вызовом нельзя отправлять значение через `send` (кроме `None`), потому что генератор ещё не стоит ни на одном `yield`."
+ },
+ {
+  "topic_no": 9,
+  "topic": "Итераторы и генераторы.",
+  "level": "hard",
+  "question": "В чем проблема в функцие cycle ниже?",
+  "code": "def cycle(iterable: tp.Iterable[tp.Any]) -> tp.Iterator[tp.Any]:\n    while True:\n        yield from iterable",
+  "answer": "Основная проблема заключается в том, что на вход в функцию подается итерируемый объект, в том числе итераторы и генераторы, соответственно, нужно учесть следующие случаи:\n\n- пустой список\n- итератор, нужно как-то побороть иссякаемость, например, положив в список\n- бесконечный генератор, нужно как-то побороть моментальное переполнение памяти когда кладем в список - кладем лениво",
+  "id": 129,
+  "claude": "Дополнение — как можно исправить (идея: запоминать элементы по мере первого прохода):\n\n```python\ndef cycle(iterable):\n    saved = []\n    for item in iterable:   # первый проход, ленивый\n        yield item\n        saved.append(item)\n    if not saved:           # пустой вход — не уходим в бесконечный цикл\n        return\n    while True:\n        yield from saved\n```",
+  "why": "Проблема в том, что `yield from iterable` **исчерпывает итератор за один круг**. На втором круге элементов уже нет, и `while True` крутится вхолостую, нагружая процессор. Для пустого списка цикл вообще бесконечно «пустой», программа зависает.\n\nПоэтому элементы нужно запоминать по мере первого прохода (лениво, чтобы не загрузить в память бесконечный генератор целиком)."
+ },
+ {
+  "topic_no": 10,
+  "topic": "Namespaces. Декораторы.",
+  "level": "simple",
+  "question": "Что такое пространство имен (namespace) в Python? Какие типы namespaces существуют?",
+  "code": "",
+  "answer": "",
+  "id": 130,
+  "claude": "**Пространство имён (namespace)** — отображение «имя → объект» (по сути словарь). Виды:\n- **Built-in** (встроенное) — `print`, `len`, `int`...\n- **Global** — имена модуля (файла).\n- **Enclosing** — имена внешней функции для вложенной.\n- **Local** — имена внутри функции.\n- Также у классов и экземпляров есть свои пространства (`__dict__`).\n\nПосмотреть: `globals()`, `locals()`, `dir()`. Локальное пространство создаётся при вызове функции и исчезает при её завершении.",
+  "why": "Namespace — это таблица «имя → объект», внутри Python реализованная как словарь. Таблиц несколько, чтобы имена не конфликтовали: `x` внутри одной функции никак не связан с `x` внутри другой.\n\nВремя жизни таблиц разное: локальная создаётся при вызове функции и исчезает при её завершении, глобальная живёт, пока работает модуль."
+ },
+ {
+  "topic_no": 10,
+  "topic": "Namespaces. Декораторы.",
+  "level": "simple",
+  "question": "Что такое область видимости (scope) и как работает правило LEGB?",
+  "code": "",
+  "answer": "",
+  "id": 131,
+  "claude": "**Область видимости (scope)** — участок кода, где имя доступно. Правило **LEGB** — порядок поиска имени:\n1. **L**ocal — внутри текущей функции;\n2. **E**nclosing — в охватывающих функциях;\n3. **G**lobal — в модуле;\n4. **B**uilt-in — встроенные имена.\n\nБерётся первое найденное. Если не найдено нигде — `NameError`.\n\n```python\nx = \"global\"\ndef outer():\n    x = \"enclosing\"\n    def inner():\n        x = \"local\"\n        print(x)      # local\n    inner()\n    print(x)          # enclosing\nouter()\nprint(x)              # global\n```",
+  "why": "Принцип правила LEGB: **побеждает ближайшее**. Python ищет имя сначала внутри функции, потом во внешней, потом в модуле, потом среди встроенных.\n\nБлагодаря этому внутри функций можно спокойно использовать короткие имена, не боясь затронуть глобальные. Любое присваивание внутри функции создаёт **локальное** имя, поэтому изменить глобальную переменную можно только с `global`."
+ },
+ {
+  "topic_no": 10,
+  "topic": "Namespaces. Декораторы.",
+  "level": "simple",
+  "question": "Что такое декоратор? Для чего используется декоратор?",
+  "code": "",
+  "answer": "",
+  "id": 132,
+  "claude": "**Декоратор** — функция, которая принимает функцию и возвращает новую (обычно «обёртку» вокруг неё). Позволяет добавить поведение к функции, не меняя её код: логирование, замер времени, кэширование, проверка прав, повторные попытки.\n\nЗапись `@dec` над `def f` равна `f = dec(f)`.\n\n```python\ndef log(func):\n    def wrapper(*args, **kwargs):\n        print(\"вызов\", func.__name__)\n        return func(*args, **kwargs)\n    return wrapper\n\n@log\ndef hello():\n    print(\"привет\")\n\nhello()\n# вызов hello\n# привет\n```",
+  "why": "Функции в Python — объекты, поэтому функцию можно передать в другую функцию и вернуть новую. Декоратор — как раз «упаковка» вокруг функции: имя теперь указывает на обёртку, которая делает дополнительную работу.\n\nЗапись `@dec` над `def f` — просто короткий способ написать `f = dec(f)`."
+ },
+ {
+  "topic_no": 10,
+  "topic": "Namespaces. Декораторы.",
+  "level": "simple",
+  "question": "Как работают ключевые слова global и nonlocal?",
+  "code": "",
+  "answer": "",
+  "id": 133,
+  "claude": "Без этих слов присваивание внутри функции создаёт **локальную** переменную.\n- `global x` — внутри функции `x` относится к **глобальной** переменной (её можно изменить).\n- `nonlocal x` — `x` относится к переменной **ближайшей внешней функции** (не глобальной).\n\n```python\ncount = 0\ndef inc():\n    global count\n    count += 1\n\ndef outer():\n    n = 0\n    def inner():\n        nonlocal n\n        n += 1\n    inner()\n    return n     # 1\n```\n\nДля простого чтения эти слова не нужны. Лучше не злоупотреблять `global`.",
+  "why": "Правило компиляции: любое присваивание внутри функции делает имя **локальным**. Чтобы сказать «нет, я хочу изменить внешнюю переменную», нужны специальные слова.\n\n`global` указывает на модуль, `nonlocal` — на ближайшую внешнюю функцию. Для простого чтения они не нужны."
+ },
+ {
+  "topic_no": 10,
+  "topic": "Namespaces. Декораторы.",
+  "level": "medium",
+  "question": "Что такое замыкание (closure) и как оно связано с пространствами имен?",
+  "code": "",
+  "answer": "",
+  "id": 134,
+  "claude": "**Замыкание** — вложенная функция, которая «запоминает» переменные из внешней функции, даже когда внешняя уже завершилась. Это работает благодаря области видимости **Enclosing** из правила LEGB (значения хранятся в ячейках `__closure__`).\n\n```python\ndef make_counter():\n    n = 0\n    def counter():\n        nonlocal n\n        n += 1\n        return n\n    return counter\n\nc = make_counter()\nprint(c(), c(), c())   # 1 2 3\n```",
+  "why": "Обычно локальные переменные исчезают при выходе из функции. Но если вложенная функция на них ссылается, Python сохраняет их в специальных «ячейках», и они живут, пока жива вложенная функция.\n\nЭто даёт функции «память». Ячейки соответствуют уровню Enclosing из правила LEGB."
+ },
+ {
+  "topic_no": 10,
+  "topic": "Namespaces. Декораторы.",
+  "level": "medium",
+  "question": "Как декоратор влияет на метаданные функции и как это исправить?",
+  "code": "",
+  "answer": "Тут про `functools.wraps`s",
+  "id": 135,
+  "claude": "Дополнение: обёртка подменяет имя, документацию и прочие метаданные: `func.__name__` становится `\"wrapper\"`. Исправляется декоратором `functools.wraps`, который копирует метаданные исходной функции:\n\n```python\nimport functools\n\ndef log(func):\n    @functools.wraps(func)\n    def wrapper(*args, **kwargs):\n        return func(*args, **kwargs)\n    return wrapper\n\n@log\ndef hello():\n    \"Приветствие\"\n\nprint(hello.__name__)   # hello  (без wraps было бы \"wrapper\")\nprint(hello.__doc__)    # Приветствие\n```",
+  "why": "Декоратор подменяет функцию на обёртку, поэтому у неё имя, описание и прочие метаданные принадлежат обёртке (`wrapper`), а не исходной функции.\n\n`functools.wraps` копирует метаданные на обёртку, чтобы справка, логи и отладчик показывали настоящее имя и описание. Дополнительно сохраняется ссылка на исходную функцию (`__wrapped__`)."
+ },
+ {
+  "topic_no": 10,
+  "topic": "Namespaces. Декораторы.",
+  "level": "hard",
+  "question": "Объясните как это работает:",
+  "code": "import functools\nimport warnings\nfrom collections.abc import Callable\nfrom datetime import date, datetime\nimport typing as tp\n\n\nP = tp.ParamSpec(\"P\")\nR = tp.TypeVar(\"R\")\n\n\ndef deprecated(\n    *, since: date | datetime | None = None\n) -> Callable[[Callable[P, R]], Callable[P, R]]:\n    def decorator(func: Callable[P, R]) -> Callable[P, R]:\n        @functools.wraps(func)\n        def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:\n            parts: list[str] = [f\"Function {func.__name__}() is deprecated.\"]\n            if since is not None:\n                stamp = (\n                    since.date().isoformat()\n                    if isinstance(since, datetime)\n                    else since.isoformat()\n                )\n                parts.append(f\"Since {stamp}.\")\n            warnings.warn(\" \".join(parts), DeprecationWarning)\n            return func(*args, **kwargs)\n\n        return wrapper\n\n    return decorator",
+  "answer": "",
+  "id": 136,
+  "claude": "Это **декоратор с параметрами** (фабрика декораторов), три уровня вложенности:\n1. `deprecated(since=...)` — принимает параметры (`since` — только именованный) и возвращает `decorator`;\n2. `decorator(func)` — принимает декорируемую функцию и возвращает `wrapper`;\n3. `wrapper(*args, **kwargs)` — вызывается вместо исходной функции.\n\nЧто делает `wrapper`: собирает сообщение «Function имя() is deprecated.» и, если дана дата, добавляет «Since YYYY-MM-DD.» (для `datetime` берётся `.date()`, для `date` — сразу `isoformat()`); выдаёт предупреждение `warnings.warn(..., DeprecationWarning)`; затем вызывает исходную функцию с теми же аргументами и возвращает её результат.\n\n`@functools.wraps(func)` сохраняет имя и документацию; `ParamSpec`/`TypeVar` нужны для типизации, чтобы декоратор не терял сигнатуру функции.\n\n```python\nfrom datetime import date\n\n@deprecated(since=date(2025, 1, 1))\ndef old_api():\n    return 1\n\nold_api()   # предупреждение: Function old_api() is deprecated. Since 2025-01-01.\n```\n\nПримечание: чтобы предупреждение указывало на место вызова, обычно добавляют `stacklevel=2`.",
+  "why": "Три уровня нужны потому, что `@deprecated(since=...)` выполняется в три шага:\n1) `deprecated(since=...)` вызывается первым и возвращает декоратор;\n2) этот `decorator(func)` применяется к функции и возвращает обёртку;\n3) `wrapper(*args, **kwargs)` вызывается каждый раз, когда зовут функцию.\n\n`functools.wraps` сохраняет имя и описание функции, а `ParamSpec` и `TypeVar` нужны только для типизации, чтобы проверяющие инструменты знали: у обёртки та же сигнатура."
+ },
+ {
+  "topic_no": 10,
+  "topic": "Namespaces. Декораторы.",
+  "level": "hard",
+  "question": "Как работают цепочки декораторов? Какие нюансы нужно учитывать при написании цепочки?",
+  "code": "",
+  "answer": "",
+  "id": 137,
+  "claude": "Запись\n\n```python\n@a\n@b\n@c\ndef f(): ...\n```\n\nравна `f = a(b(c(f)))`. Декораторы **применяются снизу вверх** (сначала `c`), а при вызове обёртки выполняются **сверху вниз** (сначала `a`).\n\n```python\ndef bold(f):\n    def w(): return \"<b>\" + f() + \"</b>\"\n    return w\ndef italic(f):\n    def w(): return \"<i>\" + f() + \"</i>\"\n    return w\n\n@bold\n@italic\ndef hi(): return \"hi\"\n\nprint(hi())   # <b><i>hi</i></b>\n```\n\nНюансы:\n- **порядок важен** (например, проверку прав обычно ставят выше кэша, чтобы не отдавать из кэша закрытое);\n- в каждом декораторе использовать `functools.wraps`, иначе потеряются имя и документация;\n- обёртка должна принимать `*args, **kwargs` и **возвращать результат** исходной функции;\n- у каждого декоратора с параметрами — свой уровень вложенности, не перепутать скобки.",
+  "why": "`@a @b def f` равно `f = a(b(f))`. Сначала применяется **ближайший** к функции декоратор (`b`), потом тот, что выше (`a`).\n\nА при вызове всё идёт в обратную сторону: первой срабатывает внешняя обёртка (`a`), она вызывает обёртку `b`, а та — настоящую `f`. Поэтому порядок важен: например, проверка прав обычно должна стоять выше кэша, чтобы закрытые данные не отдавались из кэша без проверки."
+ }
+];
+
+</script>
+  <script>
+"use strict";
+
+/* ---------- данные ---------- */
+
+const QUESTIONS = window.QUESTIONS || [];
+const BY_ID = new Map(QUESTIONS.map((q) => [q.id, q]));
+
+const LEVEL_NAMES = { simple: "Простой", medium: "Средний", hard: "Сложный" };
+const LEVEL_POINTS = { simple: "0.5 балла", medium: "1 балл", hard: "2 балла" };
+const LEVEL_ORDER = ["simple", "medium", "hard"];
+
+const TOPICS = [];
+for (const q of QUESTIONS) {
+  if (!TOPICS.some((t) => t.no === q.topic_no)) {
+    TOPICS.push({ no: q.topic_no, name: q.topic.replace(/\.\s*$/, "") });
+  }
+}
+
+/* ---------- хранилище (localStorage может быть недоступен) ---------- */
+
+const KEY_SESSION = "colloq.session.v1";
+const KEY_WEAK = "colloq.weak.v1";
+
+function loadJSON(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch (e) {
+    return fallback;
+  }
+}
+
+function saveJSON(key, value) {
+  try {
+    if (value === null) localStorage.removeItem(key);
+    else localStorage.setItem(key, JSON.stringify(value));
+  } catch (e) {
+    /* без сохранения сайт всё равно работает */
+  }
+}
+
+/* ---------- вспомогательное ---------- */
+
+const $app = document.getElementById("app");
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function plural(n, one, few, many) {
+  const m10 = n % 10;
+  const m100 = n % 100;
+  if (m10 === 1 && m100 !== 11) return one;
+  if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
+  return many;
+}
+
+/* ---------- подсветка Python-кода ---------- */
+
+const PY_KEYWORDS = new Set(
+  ("and as assert async await break case class continue def del elif else except finally for from " +
+    "global if import in is lambda match nonlocal not or pass raise return try while with yield").split(" ")
+);
+const PY_CONSTS = new Set(["True", "False", "None", "self", "cls"]);
+const PY_BUILTINS = new Set(
+  ("print input int float str bool list dict set tuple frozenset len range iter next hash id isinstance " +
+    "type super object enumerate zip map filter sorted sum min max abs open Exception ValueError TypeError " +
+    "StopIteration GeneratorExit ZeroDivisionError").split(" ")
+);
+const PY_RE =
+  /(#[^\n]*)|("""[\s\S]*?"""|'''[\s\S]*?'''|[rfbRFB]{0,2}"(?:\\.|[^"\\\n])*"|[rfbRFB]{0,2}'(?:\\.|[^'\\\n])*')|(@[A-Za-z_][\w.]*)|\b(\d+(?:\.\d+)?)\b|\b([A-Za-z_]\w*)\b/g;
+
+function highlightPython(code) {
+  let out = "";
+  let last = 0;
+  code.replace(PY_RE, (m, com, str, dec, num, ident, offset) => {
+    out += esc(code.slice(last, offset));
+    last = offset + m.length;
+    let cls = "";
+    if (com) cls = "tok-com";
+    else if (str) cls = "tok-str";
+    else if (dec) cls = "tok-dec";
+    else if (num) cls = "tok-num";
+    else if (PY_KEYWORDS.has(ident)) cls = "tok-kw";
+    else if (PY_CONSTS.has(ident)) cls = "tok-const";
+    else if (PY_BUILTINS.has(ident)) cls = "tok-builtin";
+    out += cls ? `<span class="${cls}">${esc(m)}</span>` : esc(m);
+    return m;
+  });
+  out += esc(code.slice(last));
+  return out;
+}
+
+function codeBlock(code) {
+  return `<pre><code>${highlightPython(code)}</code></pre>`;
+}
+
+/* ---------- мини-разметка для ответов ---------- */
+
+function inline(text, allowBold = true) {
+  // 1) прячем `код`, чтобы звёздочки внутри него (`**kwargs`) не считались разметкой
+  const codes = [];
+  const hidden = text.replace(/`([^`]+)`/g, (m, code) => {
+    codes.push(`<code>${esc(code)}</code>`);
+    return `\u0001${codes.length - 1}\u0001`;
+  });
+  // 2) экранируем и делаем **жирный**
+  let html = esc(hidden);
+  if (allowBold) html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  // 3) возвращаем код на место
+  return html.replace(/\u0001(\d+)\u0001/g, (m, i) => codes[Number(i)]);
+}
+
+function textBlocks(text) {
+  const lines = text.split("\n");
+  let html = "";
+  let para = [];
+  let list = [];
+  const flushPara = () => {
+    if (para.length) html += `<p>${para.map((line) => inline(line)).join("<br>")}</p>`;
+    para = [];
+  };
+  const flushList = () => {
+    if (list.length) html += `<ul>${list.map((li) => `<li>${inline(li)}</li>`).join("")}</ul>`;
+    list = [];
+  };
+  for (const raw of lines) {
+    const line = raw.trimEnd();
+    if (!line.trim()) {
+      flushPara();
+      flushList();
+    } else if (/^\s*[-•]\s+/.test(line)) {
+      flushPara();
+      list.push(line.replace(/^\s*[-•]\s+/, ""));
+    } else {
+      flushList();
+      para.push(line.trim());
+    }
+  }
+  flushPara();
+  flushList();
+  return html;
+}
+
+function rich(text) {
+  let html = "";
+  let last = 0;
+  const re = /```[\w+-]*\n([\s\S]*?)```/g;
+  let m;
+  while ((m = re.exec(text))) {
+    html += textBlocks(text.slice(last, m.index));
+    html += codeBlock(m[1].replace(/\n$/, ""));
+    last = m.index + m[0].length;
+  }
+  html += textBlocks(text.slice(last));
+  return `<div class="rich">${html}</div>`;
+}
+
+/* ---------- общие куски разметки ---------- */
+
+function badges(q, extra = "") {
+  return (
+    `<div class="badges">` +
+    `<span class="badge">${esc(topicName(q))}</span>` +
+    `<span class="badge ${q.level}">${LEVEL_NAMES[q.level]} · ${LEVEL_POINTS[q.level]}</span>` +
+    extra +
+    `</div>`
+  );
+}
+
+function topicName(q) {
+  return q.topic.replace(/\.\s*$/, "");
+}
+
+function questionBody(q) {
+  return `<p class="question">${inlineQuestion(q.question)}</p>` + (q.code ? codeBlock(q.code) : "");
+}
+
+// в тексте вопросов звёздочки (**kwargs) — это просто текст, не жирный шрифт
+function inlineQuestion(text) {
+  return inline(text, false);
+}
+
+function answerBlocks(q) {
+  let html = "";
+  if (q.answer) {
+    html +=
+      `<div class="answer-block"><div class="badges"><span class="badge file">ответ из файла колоквиума</span></div>` +
+      rich(q.answer) +
+      `</div>`;
+  }
+  if (q.claude) {
+    const label = q.answer ? "дополнение от Claude" : "ответ от Claude";
+    html +=
+      `<div class="answer-block"><div class="badges"><span class="badge claude">${label}</span></div>` +
+      rich(q.claude) +
+      `</div>`;
+  }
+  if (q.why) {
+    html +=
+      `<div class="answer-block why"><div class="badges"><span class="badge why">почему так</span></div>` +
+      rich(q.why) +
+      `</div>`;
+  }
+  return html;
+}
+
+/* ---------- навигация ---------- */
+
+let currentTab = "learn";
+let learnView = "home"; // home | play | done
+let session = null;
+let revealed = false;
+let statusMsg = { text: "", kind: "" };
+
+function markTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll(".tab").forEach((b) => {
+    b.setAttribute("aria-current", b.dataset.tab === tab ? "true" : "false");
+  });
+}
+
+function setTab(tab) {
+  // уйти с вкладки «Проверка» посреди теста = прервать его (таймер не должен идти в фоне)
+  if (currentTab === "quiz" && tab !== "quiz") abortQuiz();
+  markTab(tab);
+  render();
+}
+
+document.querySelectorAll(".tab").forEach((b) => {
+  b.addEventListener("click", () => setTab(b.dataset.tab));
+});
+
+function render() {
+  if (currentTab === "browse") return renderBrowse();
+  if (currentTab === "quiz") return renderQuiz();
+  if (learnView === "play" && session) return renderPlay();
+  if (learnView === "done" && session) return renderDone();
+  learnView = "home";
+  return renderHome();
+}
+
+/* ---------- заучивание: стартовый экран ---------- */
+
+function renderHome() {
+  const saved = loadJSON(KEY_SESSION, null);
+  const weak = loadJSON(KEY_WEAK, {});
+  const weakCount = Object.keys(weak).filter((id) => BY_ID.has(Number(id))).length;
+  const hasSaved = saved && Array.isArray(saved.queue) && saved.queue.length > 0;
+
+  const topicBoxes = TOPICS.map((t) => {
+    const n = QUESTIONS.filter((q) => q.topic_no === t.no).length;
+    return `<label class="check"><input type="checkbox" name="topic" value="${t.no}" checked>
+      <span>${esc(t.name)} <span class="count">(${n})</span></span></label>`;
+  }).join("");
+
+  const levelBoxes = LEVEL_ORDER.map((l) => {
+    const n = QUESTIONS.filter((q) => q.level === l).length;
+    return `<label class="check"><input type="checkbox" name="level" value="${l}" checked>
+      <span>${LEVEL_NAMES[l]} <span class="count">(${n})</span></span></label>`;
+  }).join("");
+
+  $app.innerHTML = `
+    <h2>Режим заучивания</h2>
+    <p class="muted">Вопросы идут в случайном порядке, каждый задаётся хотя бы раз.
+    Нажали «Не знаю» — вопрос вернётся в конец очереди и будет повторяться, пока вы его не вспомните.</p>
+
+    ${
+      hasSaved
+        ? `<div class="card">
+        <b>Есть незаконченная сессия</b>
+        <p class="muted small" style="margin:4px 0 0">Выучено ${saved.known.length} из ${saved.total}, в очереди ещё ${saved.queue.length}.</p>
+        <div class="btn-row"><button class="btn primary" id="resume" type="button">Продолжить</button></div>
+      </div>`
+        : ""
+    }
+
+    <form class="card" id="setup">
+      <b>Что учить</b>
+      <fieldset class="field-group"><legend class="small muted">Темы</legend>
+        <div class="cols">${topicBoxes}</div>
+        <div class="btn-row" style="margin-top:6px">
+          <button class="btn ghost small" type="button" id="all-topics">Все темы</button>
+          <button class="btn ghost small" type="button" id="no-topics">Снять все</button>
+        </div>
+      </fieldset>
+      <fieldset class="field-group"><legend class="small muted">Сложность</legend>
+        <div>${levelBoxes}</div>
+      </fieldset>
+      <label class="check">
+        <input type="checkbox" id="only-weak" ${weakCount ? "" : "disabled"}>
+        <span>Только проблемные вопросы, где я ошибался раньше <span class="count">(${weakCount})</span></span>
+      </label>
+      <p class="muted small" id="count-line"></p>
+      <div class="btn-row"><button class="btn primary grow" id="start" type="submit">Начать заучивание</button></div>
+    </form>
+  `;
+
+  const form = document.getElementById("setup");
+  const updateCount = () => {
+    const ids = pickIds(form);
+    document.getElementById("count-line").textContent = `Будет вопросов: ${ids.length}`;
+    document.getElementById("start").disabled = ids.length === 0;
+  };
+  form.addEventListener("change", updateCount);
+  document.getElementById("all-topics").addEventListener("click", () => {
+    form.querySelectorAll('input[name="topic"]').forEach((c) => (c.checked = true));
+    updateCount();
+  });
+  document.getElementById("no-topics").addEventListener("click", () => {
+    form.querySelectorAll('input[name="topic"]').forEach((c) => (c.checked = false));
+    updateCount();
+  });
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    startSession(pickIds(form));
+  });
+  const resume = document.getElementById("resume");
+  if (resume) {
+    resume.addEventListener("click", () => {
+      session = saved;
+      session.mistakes = session.mistakes || {};
+      revealed = false;
+      statusMsg = { text: "", kind: "" };
+      learnView = "play";
+      render();
+    });
+  }
+  updateCount();
+}
+
+function pickIds(form) {
+  const topics = new Set([...form.querySelectorAll('input[name="topic"]:checked')].map((c) => Number(c.value)));
+  const levels = new Set([...form.querySelectorAll('input[name="level"]:checked')].map((c) => c.value));
+  const onlyWeak = form.querySelector("#only-weak").checked;
+  const weak = loadJSON(KEY_WEAK, {});
+  return QUESTIONS.filter(
+    (q) => topics.has(q.topic_no) && levels.has(q.level) && (!onlyWeak || weak[q.id])
+  ).map((q) => q.id);
+}
+
+/* ---------- заучивание: сессия ---------- */
+
+function startSession(ids) {
+  session = {
+    queue: shuffle(ids),
+    total: ids.length,
+    known: [],
+    mistakes: {}, // id -> сколько раз ошиблись в этой сессии
+    wrongTotal: 0,
+  };
+  saveJSON(KEY_SESSION, session);
+  revealed = false;
+  statusMsg = { text: "", kind: "" };
+  learnView = "play";
+  render();
+}
+
+function renderPlay() {
+  if (session.queue.length === 0) return finishSession();
+
+  const q = BY_ID.get(session.queue[0]);
+  const done = session.known.length;
+  const left = session.queue.length;
+  const mistakes = session.mistakes[q.id] || 0;
+  const repeatBadge = mistakes
+    ? `<span class="badge repeat">повтор · ошибок: ${mistakes}</span>`
+    : "";
+
+  $app.innerHTML = `
+    <div class="progress-line">
+      <span>Выучено <b>${done}</b> из ${session.total}</span>
+      <span>В очереди: ${left} · ошибок: ${session.wrongTotal}</span>
+    </div>
+    <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${session.total}" aria-valuenow="${done}">
+      <span style="width:${session.total ? (done / session.total) * 100 : 0}%"></span>
+    </div>
+    <p class="status ${statusMsg.kind}" aria-live="polite">${esc(statusMsg.text)}</p>
+
+    <div class="card">
+      ${badges(q, repeatBadge)}
+      ${questionBody(q)}
+      ${
+        revealed
+          ? answerBlocks(q) +
+            `<div class="btn-row">
+              <button class="btn bad grow" id="dont-know" type="button">Не знаю <kbd>1</kbd></button>
+              <button class="btn ok grow" id="know" type="button">Знаю <kbd>2</kbd></button>
+            </div>`
+          : `<div class="btn-row"><button class="btn primary grow" id="reveal" type="button">Показать ответ <kbd>Пробел</kbd></button></div>`
+      }
+    </div>
+    <div class="btn-row"><button class="btn ghost" id="exit" type="button">Выйти (прогресс сохранится)</button></div>
+  `;
+
+  if (revealed) {
+    document.getElementById("know").addEventListener("click", () => answer(true));
+    document.getElementById("dont-know").addEventListener("click", () => answer(false));
+  } else {
+    document.getElementById("reveal").addEventListener("click", reveal);
+  }
+  document.getElementById("exit").addEventListener("click", () => {
+    learnView = "home";
+    render();
+  });
+  window.scrollTo({ top: 0 });
+}
+
+function reveal() {
+  revealed = true;
+  render();
+}
+
+function answer(knew) {
+  const id = session.queue.shift();
+  const weak = loadJSON(KEY_WEAK, {});
+  if (knew) {
+    session.known.push(id);
+    if (!session.mistakes[id]) delete weak[id];
+    statusMsg = { text: "Отлично, вопрос выучен.", kind: "ok" };
+  } else {
+    session.mistakes[id] = (session.mistakes[id] || 0) + 1;
+    session.wrongTotal += 1;
+    session.queue.push(id);
+    weak[id] = 1;
+    statusMsg = { text: "Вопрос вернётся в конец очереди.", kind: "bad" };
+  }
+  saveJSON(KEY_WEAK, weak);
+  saveJSON(KEY_SESSION, session);
+  revealed = false;
+  render();
+}
+
+function finishSession() {
+  saveJSON(KEY_SESSION, null);
+  learnView = "done";
+  render();
+}
+
+function renderDone() {
+  const hadMistakes = Object.keys(session.mistakes).map(Number);
+  const firstTry = session.total - hadMistakes.length;
+  const list = hadMistakes
+    .map((id) => BY_ID.get(id))
+    .sort((a, b) => session.mistakes[b.id] - session.mistakes[a.id])
+    .map(
+      (q) =>
+        `<li>${inlineQuestion(q.question)} <span class="muted small">— ${esc(topicName(q))}, ошибок: ${session.mistakes[q.id]}</span></li>`
+    )
+    .join("");
+
+  $app.innerHTML = `
+    <h2>Сессия закончена 🎉</h2>
+    <p class="muted">Все вопросы пройдены, и каждый вы в итоге вспомнили.</p>
+    <div class="stat-grid">
+      <div class="stat"><b>${session.total}</b>вопросов в сессии</div>
+      <div class="stat"><b>${firstTry}</b>с первого раза</div>
+      <div class="stat"><b>${session.wrongTotal}</b>${plural(session.wrongTotal, "ошибка", "ошибки", "ошибок")} всего</div>
+    </div>
+    ${
+      hadMistakes.length
+        ? `<div class="card"><b>Где были ошибки</b><ul class="list-plain" style="margin-top:8px">${list}</ul></div>`
+        : ""
+    }
+    <div class="btn-row">
+      ${
+        hadMistakes.length
+          ? `<button class="btn primary" id="again-wrong" type="button">Повторить только трудные (${hadMistakes.length})</button>`
+          : ""
+      }
+      <button class="btn" id="again-all" type="button">Заново те же вопросы</button>
+      <button class="btn ghost" id="home" type="button">В начало</button>
+    </div>
+  `;
+  const allIds = [...session.known];
+  if (hadMistakes.length) {
+    document.getElementById("again-wrong").addEventListener("click", () => startSession(hadMistakes));
+  }
+  document.getElementById("again-all").addEventListener("click", () => startSession(allIds));
+  document.getElementById("home").addEventListener("click", () => {
+    learnView = "home";
+    render();
+  });
+}
+
+/* ---------- все вопросы (чтение) ---------- */
+
+const browseState = { text: "", levels: new Set(LEVEL_ORDER) };
+
+function renderBrowse() {
+  const chips = LEVEL_ORDER.map(
+    (l) =>
+      `<button class="chip" type="button" data-level="${l}" aria-pressed="${browseState.levels.has(l)}">${LEVEL_NAMES[l]}</button>`
+  ).join("");
+
+  $app.innerHTML = `
+    <h2>Все вопросы</h2>
+    <p class="muted">Нажмите на вопрос, чтобы увидеть ответ.</p>
+    <div class="toolbar">
+      <input type="search" id="search" placeholder="Поиск по вопросам и ответам" value="${esc(browseState.text)}" aria-label="Поиск">
+      <div class="chips">${chips}</div>
+    </div>
+    <p class="muted small" id="found"></p>
+    <div id="list"></div>
+  `;
+
+  const search = document.getElementById("search");
+  search.addEventListener("input", () => {
+    browseState.text = search.value;
+    renderList();
+  });
+  document.querySelectorAll(".chip").forEach((c) => {
+    c.addEventListener("click", () => {
+      const l = c.dataset.level;
+      if (browseState.levels.has(l)) browseState.levels.delete(l);
+      else browseState.levels.add(l);
+      c.setAttribute("aria-pressed", browseState.levels.has(l));
+      renderList();
+    });
+  });
+  renderList();
+}
+
+function renderList() {
+  const needle = browseState.text.trim().toLowerCase();
+  const items = QUESTIONS.filter((q) => {
+    if (!browseState.levels.has(q.level)) return false;
+    if (!needle) return true;
+    return (q.question + " " + q.code + " " + q.answer + " " + q.claude + " " + q.why).toLowerCase().includes(needle);
+  });
+  document.getElementById("found").textContent = `Найдено: ${items.length} из ${QUESTIONS.length}`;
+
+  let html = "";
+  let lastTopic = null;
+  for (const q of items) {
+    if (q.topic_no !== lastTopic) {
+      html += `<h3 class="topic-title">${esc(topicName(q))}</h3>`;
+      lastTopic = q.topic_no;
+    }
+    const origin = q.answer ? (q.claude ? "" : " · из файла") : " · ответ от Claude";
+    html += `<details class="q"><summary>${inlineQuestion(q.question)}
+      <span class="muted small">(${LEVEL_NAMES[q.level].toLowerCase()}${origin})</span></summary>
+      <div class="inner">${q.code ? codeBlock(q.code) : ""}${answerBlocks(q)}</div></details>`;
+  }
+  document.getElementById("list").innerHTML = html || '<p class="muted">Ничего не найдено.</p>';
+}
+
+/* ---------- быстрая проверка знаний ---------- */
+
+const EXAM_LEVEL_WEIGHT = { simple: 0.5, medium: 1, hard: 2 };
+const EXAM_SECONDS = 10 * 60;
+
+let quizView = "setup"; // setup | play | result
+let quiz = null; // { mode, items: [{id, weight, extra}], idx, grades: {id: 0|0.5|1}, deadline, timedOut }
+let quizRevealed = false;
+let quizTimer = null;
+const quizSettings = { mode: "short", count: 10 };
+
+function stopQuizTimer() {
+  if (quizTimer) {
+    clearInterval(quizTimer);
+    quizTimer = null;
+  }
+}
+
+function abortQuiz() {
+  stopQuizTimer();
+  quiz = null;
+  quizView = "setup";
+  quizRevealed = false;
+}
+
+function sameQuestion(a, b) {
+  return a.question === b.question && a.code === b.code;
+}
+
+// N вопросов, по кругу из разных тем (вопросы-дубликаты не берём)
+function pickBalanced(n) {
+  const pools = new Map(TOPICS.map((t) => [t.no, shuffle(QUESTIONS.filter((q) => q.topic_no === t.no))]));
+  const order = shuffle(TOPICS.map((t) => t.no));
+  const chosen = [];
+  while (chosen.length < n && [...pools.values()].some((l) => l.length)) {
+    for (const no of order) {
+      if (chosen.length >= n) break;
+      const list = pools.get(no);
+      while (list.length) {
+        const q = list.pop();
+        if (!chosen.some((c) => sameQuestion(c, q))) {
+          chosen.push(q);
+          break;
+        }
+      }
+    }
+  }
+  return shuffle(chosen).map((q) => ({ id: q.id, weight: 1, extra: false }));
+}
+
+// как в README: 2 простых + 2 средних + 2 сложных + 3 дополнительных = 10 баллов
+function pickExam() {
+  const used = [];
+  const usedTopics = new Set();
+  const items = [];
+  const take = (level, extra) => {
+    const cands = shuffle(
+      QUESTIONS.filter((q) => (level ? q.level === level : true) && !used.some((u) => sameQuestion(u, q)))
+    );
+    const q = cands.find((c) => !usedTopics.has(c.topic_no)) || cands[0];
+    used.push(q);
+    usedTopics.add(q.topic_no);
+    items.push({ id: q.id, weight: extra ? 1 : EXAM_LEVEL_WEIGHT[q.level], extra });
+  };
+  for (const level of ["simple", "simple", "medium", "medium", "hard", "hard"]) take(level, false);
+  for (let i = 0; i < 3; i++) take(null, true);
+  return items;
+}
+
+function startQuiz() {
+  stopQuizTimer();
+  const exam = quizSettings.mode === "exam";
+  quiz = {
+    mode: quizSettings.mode,
+    items: exam ? pickExam() : pickBalanced(quizSettings.count),
+    idx: 0,
+    grades: {},
+    deadline: exam ? Date.now() + EXAM_SECONDS * 1000 : 0,
+    timedOut: false,
+  };
+  quizRevealed = false;
+  quizView = "play";
+  if (exam) quizTimer = setInterval(tickQuizTimer, 500);
+  render();
+}
+
+function quizRemaining() {
+  return Math.max(0, Math.ceil((quiz.deadline - Date.now()) / 1000));
+}
+
+function formatTime(sec) {
+  return `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, "0")}`;
+}
+
+function tickQuizTimer() {
+  if (!quiz || quizView !== "play") return stopQuizTimer();
+  const left = quizRemaining();
+  const el = document.getElementById("timer");
+  if (el) {
+    el.textContent = formatTime(left);
+    el.classList.toggle("low", left <= 60);
+  }
+  if (left <= 0) {
+    quiz.timedOut = true;
+    finishQuiz();
+  }
+}
+
+function renderQuiz() {
+  if (quizView === "play" && quiz) return renderQuizPlay();
+  if (quizView === "result" && quiz) return renderQuizResult();
+  quizView = "setup";
+  return renderQuizSetup();
+}
+
+function renderQuizSetup() {
+  const countOpts = [5, 10, 20]
+    .map(
+      (n) =>
+        `<label class="check"><input type="radio" name="count" value="${n}" ${quizSettings.count === n ? "checked" : ""}>
+        <span>${n} ${plural(n, "вопрос", "вопроса", "вопросов")}</span></label>`
+    )
+    .join("");
+
+  $app.innerHTML = `
+    <h2>Быстрая проверка знаний</h2>
+    <p class="muted">Один проход без повторов: отвечаете про себя, смотрите ответ и честно оцениваете себя.
+    В конце — результат и разбор ошибок.</p>
+    <form class="card" id="quiz-setup">
+      <label class="check">
+        <input type="radio" name="mode" value="short" ${quizSettings.mode === "short" ? "checked" : ""}>
+        <span><b>Короткий тест</b><br><span class="muted small">Случайные вопросы из разных тем. Каждый вопрос стоит 1 балл.</span></span>
+      </label>
+      <div class="field-group indent" id="count-box">${countOpts}</div>
+      <label class="check">
+        <input type="radio" name="mode" value="exam" ${quizSettings.mode === "exam" ? "checked" : ""}>
+        <span><b>Как на колоквиуме</b><br><span class="muted small">2 простых (по 0.5 балла) + 2 средних (по 1) + 2 сложных (по 2) + 3 дополнительных (по 1) = 10 баллов. На всё 10 минут.</span></span>
+      </label>
+      <div class="btn-row"><button class="btn primary grow" type="submit">Начать проверку</button></div>
+    </form>
+  `;
+
+  const form = document.getElementById("quiz-setup");
+  const sync = () => {
+    quizSettings.mode = form.elements.mode.value;
+    quizSettings.count = Number(form.elements.count.value);
+    document.getElementById("count-box").classList.toggle("hidden", quizSettings.mode !== "short");
+  };
+  form.addEventListener("change", sync);
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    sync();
+    startQuiz();
+  });
+  sync();
+}
+
+function renderQuizPlay() {
+  const item = quiz.items[quiz.idx];
+  const q = BY_ID.get(item.id);
+  const n = quiz.items.length;
+  const exam = quiz.mode === "exam";
+  const weightLabel = exam
+    ? `<span class="badge">${item.extra ? "дополнительный · " : ""}${item.weight} ${plural(item.weight === 1 ? 1 : 2, "балл", "балла", "баллов")}</span>`
+    : "";
+  const badgeLine = `<div class="badges"><span class="badge">${esc(topicName(q))}</span>${
+    exam && !item.extra ? `<span class="badge ${q.level}">${LEVEL_NAMES[q.level]}</span>` : ""
+  }${weightLabel}</div>`;
+
+  $app.innerHTML = `
+    <div class="progress-line">
+      <span>Вопрос <b>${quiz.idx + 1}</b> из ${n}</span>
+      ${exam ? `<span>Осталось: <b id="timer" class="timer">${formatTime(quizRemaining())}</b></span>` : ""}
+    </div>
+    <div class="bar"><span style="width:${(quiz.idx / n) * 100}%"></span></div>
+
+    <div class="card">
+      ${badgeLine}
+      ${questionBody(q)}
+      ${
+        quizRevealed
+          ? answerBlocks(q) +
+            `<p class="muted small" style="margin:14px 0 0">Как вы ответили?</p>
+             <div class="btn-row" style="margin-top:6px">
+              <button class="btn bad grow" data-grade="0" type="button">Не знаю <kbd>1</kbd></button>
+              <button class="btn half grow" data-grade="0.5" type="button">Частично <kbd>2</kbd></button>
+              <button class="btn ok grow" data-grade="1" type="button">Знаю <kbd>3</kbd></button>
+            </div>`
+          : `<div class="btn-row"><button class="btn primary grow" id="q-reveal" type="button">Показать ответ <kbd>Пробел</kbd></button></div>`
+      }
+    </div>
+    <div class="btn-row"><button class="btn ghost" id="q-exit" type="button">Прервать проверку</button></div>
+  `;
+
+  if (quizRevealed) {
+    document.querySelectorAll("[data-grade]").forEach((b) => {
+      b.addEventListener("click", () => gradeQuiz(Number(b.dataset.grade)));
+    });
+  } else {
+    document.getElementById("q-reveal").addEventListener("click", revealQuiz);
+  }
+  document.getElementById("q-exit").addEventListener("click", () => {
+    abortQuiz();
+    render();
+  });
+  window.scrollTo({ top: 0 });
+}
+
+function revealQuiz() {
+  quizRevealed = true;
+  render();
+}
+
+function gradeQuiz(grade) {
+  const item = quiz.items[quiz.idx];
+  quiz.grades[item.id] = grade;
+  if (grade < 1) {
+    const weak = loadJSON(KEY_WEAK, {});
+    weak[item.id] = 1;
+    saveJSON(KEY_WEAK, weak);
+  }
+  quiz.idx += 1;
+  quizRevealed = false;
+  if (quiz.idx >= quiz.items.length) finishQuiz();
+  else render();
+}
+
+function finishQuiz() {
+  stopQuizTimer();
+  quizView = "result";
+  render();
+}
+
+function fmtScore(x) {
+  return String(Math.round(x * 100) / 100).replace(".", ",");
+}
+
+function renderQuizResult() {
+  const exam = quiz.mode === "exam";
+  const max = quiz.items.reduce((s, it) => s + it.weight, 0);
+  const earned = quiz.items.reduce((s, it) => s + it.weight * (quiz.grades[it.id] || 0), 0);
+  const percent = Math.round((earned / max) * 100);
+  const verdict =
+    percent >= 85
+      ? "Отлично! Материал вы знаете хорошо."
+      : percent >= 60
+        ? "Неплохо, но есть что подтянуть."
+        : "Пока рано идти на колоквиум: стоит позаниматься в режиме заучивания.";
+
+  const mark = (g) => (g === undefined ? "—" : g === 1 ? "✓" : g === 0.5 ? "½" : "✗");
+  const cls = (g) => (g === 1 ? "ok" : g === 0.5 ? "half" : "bad");
+
+  const byTopic = TOPICS.map((t) => {
+    const its = quiz.items.filter((it) => BY_ID.get(it.id).topic_no === t.no);
+    if (!its.length) return "";
+    const got = its.reduce((s, it) => s + it.weight * (quiz.grades[it.id] || 0), 0);
+    const tot = its.reduce((s, it) => s + it.weight, 0);
+    return `<li><span>${esc(t.name)}</span><span class="muted">${fmtScore(got)} из ${fmtScore(tot)}</span></li>`;
+  }).join("");
+
+  const rows = quiz.items
+    .map((it) => {
+      const q = BY_ID.get(it.id);
+      const g = quiz.grades[it.id];
+      return `<details class="q"><summary><span class="res ${g === undefined ? "" : cls(g)}">${mark(g)}</span>
+        ${inlineQuestion(q.question)}</summary>
+        <div class="inner">${q.code ? codeBlock(q.code) : ""}${answerBlocks(q)}</div></details>`;
+    })
+    .join("");
+
+  const missed = quiz.items.filter((it) => (quiz.grades[it.id] || 0) < 1).map((it) => it.id);
+
+  $app.innerHTML = `
+    <h2>Результат</h2>
+    ${quiz.timedOut ? '<p class="status bad">Время вышло, неотвеченные вопросы считаются как «Не знаю».</p>' : ""}
+    <div class="stat-grid">
+      <div class="stat"><b>${fmtScore(earned)} из ${fmtScore(max)}</b>${exam ? "баллов" : "баллов (по 1 за вопрос)"}</div>
+      <div class="stat"><b>${percent}%</b>правильных ответов</div>
+      <div class="stat"><b>${quiz.items.length - missed.length} из ${quiz.items.length}</b>знаю уверенно</div>
+    </div>
+    <p>${verdict}</p>
+    ${
+      exam
+        ? '<p class="muted small">На настоящем колоквиуме до 3 баллов можно получить на дополнительных вопросах преподавателя, поэтому реальный итог может отличаться.</p>'
+        : ""
+    }
+    <h3>По темам</h3>
+    <ul class="list-plain split">${byTopic}</ul>
+    <h3>Все вопросы <span class="muted small">(нажмите, чтобы увидеть ответ)</span></h3>
+    ${rows}
+    <div class="btn-row">
+      ${
+        missed.length
+          ? `<button class="btn primary" id="learn-missed" type="button">Заучить ошибки (${missed.length})</button>`
+          : ""
+      }
+      <button class="btn" id="again" type="button">Пройти ещё раз</button>
+      <button class="btn ghost" id="to-setup" type="button">К выбору режима</button>
+    </div>
+  `;
+
+  const learnMissed = document.getElementById("learn-missed");
+  if (learnMissed) {
+    learnMissed.addEventListener("click", () => {
+      abortQuiz();
+      markTab("learn");
+      startSession(missed);
+    });
+  }
+  document.getElementById("again").addEventListener("click", startQuiz);
+  document.getElementById("to-setup").addEventListener("click", () => {
+    abortQuiz();
+    render();
+  });
+}
+
+/* ---------- клавиатура ---------- */
+
+document.addEventListener("keydown", (e) => {
+  const tag = e.target && e.target.tagName;
+  if (tag === "INPUT" || tag === "BUTTON" || tag === "TEXTAREA") return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+  if (currentTab === "quiz" && quizView === "play" && quiz) {
+    if (!quizRevealed && (e.key === " " || e.key === "Enter")) {
+      e.preventDefault();
+      revealQuiz();
+    } else if (quizRevealed && ["1", "2", "3"].includes(e.key)) {
+      e.preventDefault();
+      gradeQuiz([0, 0.5, 1][Number(e.key) - 1]);
+    }
+    return;
+  }
+
+  if (currentTab !== "learn" || learnView !== "play" || !session) return;
+  if (!revealed && (e.key === " " || e.key === "Enter")) {
+    e.preventDefault();
+    reveal();
+  } else if (revealed && (e.key === "1" || e.key === "ArrowLeft")) {
+    e.preventDefault();
+    answer(false);
+  } else if (revealed && (e.key === "2" || e.key === "ArrowRight")) {
+    e.preventDefault();
+    answer(true);
+  }
+});
+
+/* ---------- старт ---------- */
+
+setTab("learn");
+
+</script>
+</body>
+</html>
